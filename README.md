@@ -1,6 +1,10 @@
 # autoexportArchiveForiOS
 iOS项目自动打包脚本
-
+# mac 终端执行
+```shell
+# 终端执行脚本命令
+/bin/bash /Users/momo/Documents/GitHub/autoexportArchiveForiOS/autoexport_archive.sh
+```
 # Crontab 自动执行
 ```shell
 # 以下暂未验证，可以尝试
