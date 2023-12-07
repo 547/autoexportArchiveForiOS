@@ -158,7 +158,8 @@ function releaseiOSProject() {
     xcodebuild clean -scheme $ios_scheme
     echo "clean 成功"
     xcodebuild archive -workspace $ios_workspace -scheme $ios_scheme -configuration $ios_builld_configurations -destination generic/platform=ios -archivePath $iOSArchive
-    checkFileExists $iOSArchive "archive 失败"
+    # .xcarchive是个文件夹不是文件
+    checkPathExists $iOSArchive "archive 失败"
     verifyExecutionResults $?
     echo "archive 成功"
     iOSExportOptionsPlist=$ios_adhoc_export_options_plist
