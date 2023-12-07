@@ -1,6 +1,6 @@
 #!/bin/bash
 # 设置程序出错时不再继续执行
-# set -e
+set -e
 # git仓库用户名(拉代码没问题的话可以不用配置)
 git_name=""
 # git仓库密码 (拉代码没问题的话可以不用配置)
@@ -10,13 +10,13 @@ pgyer_api_key="c6c5e3109ff59647d57f0c6c5944bb5f"
 # 蒲公英所需更新指定的渠道短链接（到对应应用的渠道下面查看）
 pgyer_build_channel_shortcut="iOSCanary"
 # flutter 项目绝对路径
-flutter_path="/Users/momo/Documents/GitHub/flutter-pin-module"
+flutter_path="/Users/momo/Documents/AutomaticWorkflow/flutter-pin-module"
 # flutter 项目远程仓库地址(只要 http:# 后面的) (拉代码没问题的话可以不用配置)
 flutter_git_url="git.upms.gree.com/dept5-front/flutter-pin-module.git"
 # flutter 项目打包需要使用的分支
 flutter_branch="release_23_12_07"
 # iOS 项目绝对路径
-ios_path="/Users/momo/Documents/GitHub/ios-pin/salesSystem"
+ios_path="/Users/momo/Documents/AutomaticWorkflow/ios-pin/salesSystem"
 # iOS 项目远程仓库地址(只要 http:# 后面的) (拉代码没问题的话可以不用配置)
 ios_git_url="git.upms.gree.com/dept5-front/ios-pin.git"
 # iOS 项目打包需要使用的分支
@@ -127,8 +127,8 @@ function verifyNecessaryParameters()
     checkFileExists $ios_app_store_export_options_plist "app store ExportOptions.plist绝对路径不存在"
     verifyExecutionResults $?
 
-    # 清空归档文件
-    find $ios_archive_path -type f -name "*.xcarchive" -delete
+    # 清空归档文件(没有权限删除就不删了)
+    # find $ios_archive_path -type f -name "*.xcarchive" -delete
     # 清空ipa输出文件
     find $ios_ipa_export_path -type f -name "*.ipa" -delete
 
@@ -160,6 +160,7 @@ function releaseiOSProject() {
     xcodebuild clean -scheme $ios_scheme
     echo "clean 成功"
     xcodebuild archive -workspace $ios_workspace -scheme $ios_scheme -configuration $ios_builld_configurations -destination generic/platform=ios -archivePath $iOSArchive
+    verifyExecutionResults $?
     # .xcarchive是个文件夹不是文件
     checkPathExists $iOSArchive "archive 失败"
     verifyExecutionResults $?
