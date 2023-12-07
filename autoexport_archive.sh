@@ -2,9 +2,9 @@
 # 设置程序出错时不再继续执行
 # set -e
 # git仓库用户名
-git_name="a80741"
+git_name=""
 # git仓库密码
-git_passward="gree!234"
+git_passward=""
 #/ 蒲公英API key
 pgyer_api_key="c6c5e3109ff59647d57f0c6c5944bb5f"
 # 蒲公英所需更新指定的渠道短链接（到对应应用的渠道下面查看）
