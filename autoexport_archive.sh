@@ -122,9 +122,16 @@ function checkoutBranch()
 function getGitLogs()
 {   
     local branch=`git branch --show-current`
-    local logs=$(git log $branch -2 --pretty=format:'"%s (%cr)"')
-    local result="$1当前分支:$branch$logs"
+    local logs=$(git log $branch -5 --pretty="format:\"*%s --%cr\"")
+    local result="$1当前分支:$branch\n"
+ 
+    for element in $logs
+    do
+        result="${result}${element}"
+    done
+
     echo $result
+
     if test $1 == "flutter" 
     then
         flutter_git_logs=$result
@@ -137,7 +144,7 @@ function getGitLogs()
 # 拼接更新文案
 function getUpdateDescription()
 {
-    local result="$environment_description\n$tips\n"
+    local result="$environment_description\n$tips\n$ios_git_logs$flutter_git_logs"
     echo $result
     update_description=$result
 }
