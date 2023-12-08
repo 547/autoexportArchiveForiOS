@@ -5,6 +5,14 @@ set -e
 # 加载配置文件（crontab 用的自己的一套环境变量，并没有自动加载系统的配置文件，导致一些命令会找不到，例如：flutter: command not found）
 # 不是用crontab可以注释掉
 . /Users/momo/.zshrc;
+# 环境 1:开发 2:测试 3:灰度 4:生产
+environment=4
+
+# flutter 项目打包需要使用的分支
+flutter_branch="release_23_12_07"
+
+# iOS 项目打包需要使用的分支
+ios_branch="product_1.0.61"
 
 # git仓库用户名(拉代码没问题的话可以不用配置)
 git_name=""
@@ -12,20 +20,18 @@ git_name=""
 git_passward=""
 #/ 蒲公英API key
 pgyer_api_key="c6c5e3109ff59647d57f0c6c5944bb5f"
-# 蒲公英所需更新指定的渠道短链接（到对应应用的渠道下面查看）
-pgyer_build_channel_shortcut="iOSProduct"
+
 # flutter 项目绝对路径
 flutter_path="/Users/momo/Documents/AutomaticWorkflow/flutter-pin-module"
 # flutter 项目远程仓库地址(只要 http:# 后面的) (拉代码没问题的话可以不用配置)
 flutter_git_url="git.upms.gree.com/dept5-front/flutter-pin-module.git"
-# flutter 项目打包需要使用的分支
-flutter_branch="release_23_12_07"
+
+
 # iOS 项目绝对路径
 ios_path="/Users/momo/Documents/AutomaticWorkflow/ios-pin/salesSystem"
 # iOS 项目远程仓库地址(只要 http:# 后面的) (拉代码没问题的话可以不用配置)
 ios_git_url="git.upms.gree.com/dept5-front/ios-pin.git"
-# iOS 项目打包需要使用的分支
-ios_branch="product_1.0.61"
+
 ios_workspace="GreeSalesSystem.xcworkspace"
 ios_target="GreeSalesSystem"
 ios_builld_configurations="Release"
@@ -42,14 +48,17 @@ ios_ipa_name="格力动销"
 ios_adhoc_export_options_plist="/Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AdhocExportOptions.plist"
 # 手动打包输出的app store ExportOptions.plist
 ios_app_store_export_options_plist="/Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AppStoreExportOptions.plist"
-# 自定义版本更新描述
-custom_update_description="生产环境"
+
 #提示文案
 tips="\n❗️❗️❗️有渠道链接请务必使用渠道链接下载app❗️❗️❗️\n"
 
 
 # 👆👆👆👆👆👆👆👆👆👆👆👆👆 上面是需要预先设置的 ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️
 
+# 蒲公英所需更新指定的渠道短链接（到对应应用的渠道下面查看）
+pgyer_build_channel_shortcut=""
+# 自定义版本更新描述
+environment_description=""
 #git log
 flutter_git_logs=""
 ios_git_logs=""
@@ -59,6 +68,35 @@ update_description=""
 # 当前脚本所在的文件路径
 currentPath=$(cd `dirname "$0"` && pwd)
 iOSArchive="$ios_archive_path/$ios_target.xcarchive"
+
+# 根据环境更新相关的信息
+function updateEnvironmentInfo()
+{
+    case $environment in
+        1) 
+        pgyer_build_channel_shortcut="iOSDev"
+        environment_description="开发环境"
+        ;;
+        2) 
+        pgyer_build_channel_shortcut="iOSTest_gree"
+        environment_description="测试环境"
+        ;;
+        3) 
+        pgyer_build_channel_shortcut="iOSCanary"
+        environment_description="灰度环境"
+        ;;
+        4)
+        pgyer_build_channel_shortcut="iOSProduct"
+        environment_description="生产环境"
+        ;;
+        *)
+        pgyer_build_channel_shortcut="AutomaticWorkflow"
+        environment_description="自动化测试"
+        ;;
+    esac
+    echo $pgyer_build_channel_shortcut
+    echo $environment_description
+}
 # 校验执行结果
 function verifyExecutionResults()
 {
@@ -98,7 +136,7 @@ function getGitLogs()
 # 拼接更新文案
 function getUpdateDescription()
 {
-    local result="$custom_update_description$tips$flutter_git_logs$ios_git_logs"
+    local result="$environment_description$tips$flutter_git_logs$ios_git_logs"
     echo $result
     update_description=$result
 }
@@ -179,12 +217,18 @@ function verifyNecessaryParameters()
     verifyExecutionResults $?
     checkFileExists $ios_app_store_export_options_plist "app store ExportOptions.plist绝对路径不存在"
     verifyExecutionResults $?
+}
+# 准备工作
+function preparation()
+{
+    verifyNecessaryParameters
 
     # 清空归档文件(没有权限删除就不删了)
     # find $ios_archive_path -type f -name "*.xcarchive" -delete
     # 清空ipa输出文件
     find $ios_ipa_export_path -type f -name "*.ipa" -delete
 
+    updateEnvironmentInfo
 }
 function releaseFlutterProject() {
     echo "开始执行flutter项目任务"
@@ -246,7 +290,7 @@ function uploadPgyer()
     . $uploadFile -k $pgyer_api_key -d $update_description -c $pgyer_build_channel_shortcut $ipaFile
     echo "上传蒲公英任务执行完毕"
 }
-verifyNecessaryParameters
+preparation
 releaseFlutterProject
 releaseiOSProject
 uploadPgyer
