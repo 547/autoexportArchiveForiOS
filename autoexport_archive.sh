@@ -52,7 +52,7 @@ ios_adhoc_export_options_plist="/Users/momo/Documents/AutomaticWorkflow/plists/G
 ios_app_store_export_options_plist="/Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AppStoreExportOptions.plist"
 
 #提示文案
-tips="\n❗️❗️❗️有渠道链接请务必使用渠道链接下载app❗️❗️❗️\n"
+tips="❗️❗️❗️有渠道链接请务必使用渠道链接下载app❗️❗️❗️"
 
 
 # 👆👆👆👆👆👆👆👆👆👆👆👆👆 上面是需要预先设置的 ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️
@@ -122,13 +122,13 @@ function checkoutBranch()
 function getGitLogs()
 {   
     local branch=`git branch --show-current`
-    local logs=$(git log $branch -4 --color --pretty=format:'*%C(cyan)%s %C(magenta)(%cr)')
-    local result="$1当前分支：$branch\n$logs\n"
+    local logs=$(git log $branch -2 --pretty=format:'"%s (%cr)"')
+    local result="$1当前分支:$branch$logs"
     echo $result
     if test $1 == "flutter" 
     then
         flutter_git_logs=$result
-    else if test $1 == "ios" 
+    else if test $1 == "ios"
         then
             ios_git_logs=$result
         fi      
@@ -137,7 +137,7 @@ function getGitLogs()
 # 拼接更新文案
 function getUpdateDescription()
 {
-    local result="$environment_description$tips$flutter_git_logs$ios_git_logs"
+    local result="$environment_description\n$tips\n"
     echo $result
     update_description=$result
 }
@@ -295,7 +295,19 @@ function uploadPgyer()
     . $uploadFile -k $pgyer_api_key -d $update_description -c $pgyer_build_channel_shortcut $ipaFile
     echo "上传蒲公英任务执行完毕"
 }
+# 上传ipa
+function uploadIpa()
+{
+    if test $ios_method = "ad-hoc" 
+    then
+        uploadPgyer
+    else if test $ios_method = "app-store"
+        then
+            echo "上传app store还没实现"
+        fi      
+    fi
+}
 preparation
 releaseFlutterProject
 releaseiOSProject
-uploadPgyer
+uploadIpa
