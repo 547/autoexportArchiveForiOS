@@ -57,7 +57,8 @@ MAILTO="xxxxxx@163.com"
 Consider adding the following to ~/.profile:
 
 export LANG=en_US.UTF-8
-就是解决办法， 但是发现 在.profile文件中加入 export LANG=en_US.UTF-8 不起作用，最后改了.zshrc文件。
+
+👆上面这两句就是解决办法， 但是发现 在.profile文件中加入 export LANG=en_US.UTF-8 不起作用，最后改了.zshrc文件。
 改完 .zshrc 后终端运行一下代码
 ``` shell
 source .zshrc
