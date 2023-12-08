@@ -1,11 +1,11 @@
-# autoexportArchiveForiOS
-iOS项目自动打包脚本
-# mac 终端执行
+# iOS项目自动打包脚本
+
+## mac 终端执行
 ```shell
 # 终端执行脚本命令（要改成自己电脑的路径）
 /bin/bash /Users/momo/Documents/GitHub/autoexportArchiveForiOS/autoexport_archive.sh
 ```
-# Crontab 自动执行
+## Crontab 自动执行
 ## Crontab 定时打包代码示例 (推荐俩个好用的crontab 代码网站：[crontab-generator](https://crontab-generator.org/)、[crontab guru](https://crontab.guru/))
 ### 设置Crontab任务 
 终端执行以下命令
@@ -38,6 +38,7 @@ MAILTO="xxxxxx@163.com"
 原因是 Crontab没有访问用户密钥的权限
 
 解决办法：可以把证书和私钥复制到 钥匙串的 系统-> 我的证书 里，Crontab就可以找到签名证书的密钥了。
+
 [参考链接](https://blog.csdn.net/qq_32873193/article/details/133274449)
 
 ### pod install 时报错
@@ -64,4 +65,5 @@ source .zshrc
 echo $LANG
 ```
 [参考链接1](https://www.coder.work/article/7771908#google_vignette)
+
 [参考链接2](https://www.jianshu.com/p/3241de892e4d)
