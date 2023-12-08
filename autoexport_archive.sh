@@ -1,6 +1,11 @@
 #!/bin/bash
 # 设置程序出错时不再继续执行
 set -e
+
+# 加载配置文件（crontab 用的自己的一套环境变量，并没有自动加载系统的配置文件，导致一些命令会找不到，例如：flutter: command not found）
+# 不是用crontab可以注释掉
+. /Users/momo/.zshrc;
+
 # git仓库用户名(拉代码没问题的话可以不用配置)
 git_name=""
 # git仓库密码 (拉代码没问题的话可以不用配置)
