@@ -68,7 +68,6 @@ update_description=""
 # 当前脚本所在的文件路径
 currentPath=$(cd `dirname "$0"` && pwd)
 iOSArchive="$ios_archive_path/$ios_target.xcarchive"
-
 # 根据环境更新相关的信息
 function updateEnvironmentInfo()
 {
@@ -221,13 +220,17 @@ function verifyNecessaryParameters()
 # 准备工作
 function preparation()
 {
+    # 获取参数
+    # getParameters
+    # 校验必要参数
     verifyNecessaryParameters
 
     # 清空归档文件(没有权限删除就不删了)
     # find $ios_archive_path -type f -name "*.xcarchive" -delete
     # 清空ipa输出文件
     find $ios_ipa_export_path -type f -name "*.ipa" -delete
-
+    
+    # 更新环境相关的信息
     updateEnvironmentInfo
 }
 function releaseFlutterProject() {
