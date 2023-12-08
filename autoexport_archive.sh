@@ -1,6 +1,6 @@
 #!/bin/bash
 # 设置程序出错时不再继续执行
-# set -e
+set -e
 # git仓库用户名(拉代码没问题的话可以不用配置)
 git_name=""
 # git仓库密码 (拉代码没问题的话可以不用配置)
@@ -46,10 +46,30 @@ update_description="自动化测试"
 # 当前脚本所在的文件路径
 currentPath=$(cd `dirname "$0"` && pwd)
 iOSArchive="$ios_archive_path/$ios_target.xcarchive"
+# 校验执行结果
+function verifyExecutionResults()
+{
+    if test $1 -ne 0
+    then
+     exit 1
+    fi
+}
+# 切换分支
+function checkoutBranch()
+{
+    branch=`git branch --show-current`
+    echo "当前分支：$branch"
+    if test $branch != $1
+    then
+        git checkout $1
+        verifyExecutionResults $?
+    fi
+}
 # 校验字符串是否为空
 function checkStringValid()
 {
-    if [ -z $1 ]; then
+    if test -z $1
+    then
     echo $2
     return 1
     else
@@ -59,30 +79,26 @@ function checkStringValid()
 # 校验文件是否存在
 function checkFileExists()
 {
-    if [ ! -f $1 ]; then
-    echo $2
-    return 1
-    else
+    if test -f $1 
+    then
         return 0
+    else
+        echo $2
+        return 1
     fi
 }
 # 校验路径是否存在
 function checkPathExists()
 {
-    if [ ! -d $1 ]; then
-    echo $2
-    return 1
-    else
+    if test -d $1 
+    then
         return 0
+    else
+        echo $2
+        return 1       
     fi
 }
-# 校验执行结果
-function verifyExecutionResults()
-{
-    if [ $1 -ne 0 ];then
-     exit 1
-    fi
-}
+
 # 校验必要参数
 function verifyNecessaryParameters()
 {
@@ -140,8 +156,9 @@ function releaseFlutterProject() {
     # 拉代码没问题的话可以不用跑这俩条命令
     # flutterGitUrl="http://$git_name:$git_passward@$flutter_git_url"
     # git remote set-url origin $flutterGitUrl
-    git checkout $flutter_branch
+    checkoutBranch $flutter_branch
     git pull
+    verifyExecutionResults $?
     # flutter clean
     flutter pub get
     flutter build ios --release --no-tree-shake-icons
@@ -154,8 +171,9 @@ function releaseiOSProject() {
     # 拉代码没问题的话可以不用跑这俩条命令
     # iOSGitUrl="http://$git_name:$git_passward@$ios_git_url"
     # git remote set-url origin $iOSGitUrl
-    git checkout $ios_branch
+    checkoutBranch $ios_branch
     git pull
+    verifyExecutionResults $?
     pod install
     echo "开始打包"
     xcodebuild clean -scheme $ios_scheme
