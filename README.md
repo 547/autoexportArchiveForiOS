@@ -18,6 +18,9 @@ MAILTO="xxxxxx@163.com"
 # 每隔2小时执行一次 (执行的文件要提供绝对路径)（要改成自己电脑的路径）
 0 */2 * * * /bin/bash /Users/momo/Documents/GitHub/autoexportArchiveForiOS/autoexport_archive.sh
 #编辑完后 点击 ESC 然后 输入 ：wq 结束编辑并保存
+
+#输出所有的定时任务
+crontab -l
 ```
 ## Crontab 定时打包遇到的问题
 
