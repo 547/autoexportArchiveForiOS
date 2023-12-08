@@ -13,7 +13,7 @@ git_passward=""
 #/ 蒲公英API key
 pgyer_api_key="c6c5e3109ff59647d57f0c6c5944bb5f"
 # 蒲公英所需更新指定的渠道短链接（到对应应用的渠道下面查看）
-pgyer_build_channel_shortcut="AutomaticWorkflow"
+pgyer_build_channel_shortcut="iOSProduct"
 # flutter 项目绝对路径
 flutter_path="/Users/momo/Documents/AutomaticWorkflow/flutter-pin-module"
 # flutter 项目远程仓库地址(只要 http:# 后面的) (拉代码没问题的话可以不用配置)
@@ -42,11 +42,19 @@ ios_ipa_name="格力动销"
 ios_adhoc_export_options_plist="/Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AdhocExportOptions.plist"
 # 手动打包输出的app store ExportOptions.plist
 ios_app_store_export_options_plist="/Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AppStoreExportOptions.plist"
-# 版本更新描述
-update_description="自动化测试"
+# 自定义版本更新描述
+custom_update_description="生产环境"
+#提示文案
+tips="\n❗️❗️❗️有渠道链接请务必使用渠道链接下载app❗️❗️❗️\n"
 
 
 # 👆👆👆👆👆👆👆👆👆👆👆👆👆 上面是需要预先设置的 ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️
+
+#git log
+flutter_git_logs=""
+ios_git_logs=""
+# 版本更新描述
+update_description=""
 
 # 当前脚本所在的文件路径
 currentPath=$(cd `dirname "$0"` && pwd)
@@ -62,13 +70,37 @@ function verifyExecutionResults()
 # 切换分支
 function checkoutBranch()
 {
-    branch=`git branch --show-current`
+    local branch=`git branch --show-current`
     echo "当前分支：$branch"
     if test $branch != $1
     then
         git checkout $1
         verifyExecutionResults $?
+        echo "切到了$1分支"
     fi
+}
+# 获取 git logs
+function getGitLogs()
+{   
+    local branch=`git branch --show-current`
+    local logs=$(git log $branch -5 --color --graph --pretty=format:'-%C(yellow)%d%Creset %C(cyan)%s %C(magenta)(%cr)')
+    local result="\n$1\n当前分支：$branch\n$logs\n"
+    echo $result
+    if test $1 == "flutter" 
+    then
+        flutter_git_logs=$result
+    else if test $1 == "ios" 
+        then
+            ios_git_logs=$result
+        fi      
+    fi
+}
+# 拼接更新文案
+function getUpdateDescription()
+{
+    local result="$custom_update_description$tips$flutter_git_logs$ios_git_logs"
+    echo $result
+    update_description=$result
 }
 # 校验字符串是否为空
 function checkStringValid()
@@ -164,6 +196,7 @@ function releaseFlutterProject() {
     checkoutBranch $flutter_branch
     git pull
     verifyExecutionResults $?
+    getGitLogs "flutter"
     # flutter clean
     flutter pub get
     flutter build ios --release --no-tree-shake-icons
@@ -179,6 +212,7 @@ function releaseiOSProject() {
     checkoutBranch $ios_branch
     git pull
     verifyExecutionResults $?
+    getGitLogs "ios"
     pod install
     echo "开始打包"
     xcodebuild clean -scheme $ios_scheme
@@ -208,6 +242,7 @@ function uploadPgyer()
     echo "开始上传蒲公英"
     uploadFile=$currentPath/pgyer_upload.sh
     echo "$ipaFile 上传到蒲公英脚本文件 $uploadFile"
+    getUpdateDescription
     . $uploadFile -k $pgyer_api_key -d $update_description -c $pgyer_build_channel_shortcut $ipaFile
     echo "上传蒲公英任务执行完毕"
 }
