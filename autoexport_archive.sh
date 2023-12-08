@@ -122,8 +122,8 @@ function checkoutBranch()
 function getGitLogs()
 {   
     local branch=`git branch --show-current`
-    local logs=$(git log $branch -5 --color --pretty=format:'-%C(cyan)%s %C(magenta)(%cr)')
-    local result="\n$1\n当前分支：$branch\n$logs\n"
+    local logs=$(git log $branch -4 --color --pretty=format:'*%C(cyan)%s %C(magenta)(%cr)')
+    local result="$1当前分支：$branch\n$logs\n"
     echo $result
     if test $1 == "flutter" 
     then
