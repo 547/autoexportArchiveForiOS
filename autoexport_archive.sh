@@ -14,6 +14,9 @@ flutter_branch="release_23_12_07"
 # iOS 项目打包需要使用的分支
 ios_branch="product_1.0.61"
 
+# 打包方式 app-store、ad-hoc
+ios_method="ad-hoc"
+
 # git仓库用户名(拉代码没问题的话可以不用配置)
 git_name=""
 # git仓库密码 (拉代码没问题的话可以不用配置)
@@ -36,8 +39,7 @@ ios_workspace="GreeSalesSystem.xcworkspace"
 ios_target="GreeSalesSystem"
 ios_builld_configurations="Release"
 ios_scheme="GreeSalesSystem_Release"
-# 打包方式 app-store、ad-hoc
-ios_method="ad-hoc"
+
 # 归档输出路径
 ios_archive_path="/Users/momo/Documents/AutomaticWorkflow/output/GreeSalesSystem"
 # ipa输出路径
@@ -296,4 +298,7 @@ function uploadPgyer()
 preparation
 releaseFlutterProject
 releaseiOSProject
-uploadPgyer
+if test $ios_method = "ad-hoc"
+then
+    uploadPgyer
+fi
