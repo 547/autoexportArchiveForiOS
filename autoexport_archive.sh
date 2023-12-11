@@ -122,8 +122,8 @@ function checkoutBranch()
 function getGitLogs()
 {   
     local branch=`git branch --show-current`
-    local logs=$(git log $branch -4 --pretty="format:\"*%s --%cr\"")
-    local result="$1当前分支:$branch\n"
+    local logs=$(git log $branch -4 --pretty="format:\n* %s [%cr]")
+    local result="$1当前分支:$branch"
  
     for element in $logs
     do
