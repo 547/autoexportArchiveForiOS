@@ -122,7 +122,7 @@ function checkoutBranch()
 function getGitLogs()
 {   
     local branch=`git branch --show-current`
-    local logs=$(git log $branch -4 --pretty="format:\n* %s [%cr]")
+    local logs=$(git log $branch -4 --pretty="format:\n*  %s  [%cr]")
     local result="$1当前分支:$branch"
  
     for element in $logs
@@ -144,7 +144,7 @@ function getGitLogs()
 # 拼接更新文案
 function getUpdateDescription()
 {
-    local result="$environment_description\n$tips\n$ios_git_logs$flutter_git_logs"
+    local result="$environment_description\n$tips\n$ios_git_logs\n$flutter_git_logs"
     echo $result
     update_description=$result
 }
