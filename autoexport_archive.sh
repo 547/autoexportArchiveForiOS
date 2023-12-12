@@ -12,7 +12,7 @@ environment=2
 flutter_branch="release_23_12_14"
 
 # iOS 项目打包需要使用的分支
-ios_branch="product_1.0.62"
+ios_branch="release_1.0.62"
 
 # 打包方式 app-store、ad-hoc
 ios_method="ad-hoc"
