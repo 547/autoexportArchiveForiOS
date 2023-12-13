@@ -271,7 +271,7 @@ function releaseiOSProject() {
     getGitLogs "ios"
     pod install
     echo "开始打包"
-    xcodebuild clean -scheme $ios_scheme
+    xcodebuild clean -scheme $ios_scheme -configuration $ios_builld_configurations -alltargets
     echo "clean 成功"
     xcodebuild archive -workspace $ios_workspace -scheme $ios_scheme -configuration $ios_builld_configurations -destination generic/platform=ios -archivePath $iOSArchive
     verifyExecutionResults $?
