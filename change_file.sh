@@ -4,6 +4,7 @@ set -e
 
 printHelp() {
     echo "修改指定文件的内容需要传入 文件的绝对路径 原内容 新内容"
+    echo "例如: /bin/bash change_file.sh -f /Users/momo/Documents/GitHub/autoexportArchiveForiOS/test.txt -o "const bool SINGLE_COMPILE = true" -n "const bool SINGLE_COMPILE = false""
     echo "Description:"
     echo "  -f filePath                      文件的绝对路径"
     echo "  -o oldContent                    原内容"
