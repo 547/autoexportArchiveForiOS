@@ -9,7 +9,7 @@ set -e
 environment=4
 
 # flutter 项目打包需要使用的分支
-flutter_branch="release_23_12_14"
+flutter_branch="release_23_12_19"
 
 # iOS 项目打包需要使用的分支
 ios_branch="release_1.0.62"
