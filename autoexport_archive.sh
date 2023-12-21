@@ -20,7 +20,11 @@ ios_method="ad-hoc"
 # git仓库用户名(拉代码没问题的话可以不用配置)
 git_name=""
 # git仓库密码 (拉代码没问题的话可以不用配置)
-git_passward=""
+git_password=""
+# apple developer 用户名(不上传app store的话可以不用配置)
+apple_developer_name=""
+# apple developer 密码 (不上传app store的话可以不用配置)
+apple_developer_password=""
 #/ 蒲公英API key
 pgyer_api_key="c6c5e3109ff59647d57f0c6c5944bb5f"
 
@@ -187,8 +191,15 @@ function verifyNecessaryParameters()
 {
     # checkStringValid $git_name "git仓库用户名不能为空"
     # verifyExecutionResults $?
-    # checkStringValid $git_passward "git仓库密码不能为空"
+    # checkStringValid $git_password "git仓库密码不能为空"
     # verifyExecutionResults $?
+    if test $ios_method = "app-store"
+    then
+        checkStringValid $apple_developer_name "apple developer用户名不能为空"
+        verifyExecutionResults $?
+        checkStringValid $apple_developer_password "apple developer密码不能为空"
+        verifyExecutionResults $?
+    fi
     checkStringValid $pgyer_api_key "蒲公英API key不能为空"
     verifyExecutionResults $?
     checkPathExists $flutter_path "flutter 项目绝对路径不存在"
@@ -247,7 +258,7 @@ function releaseFlutterProject() {
     cd $flutter_path
     # http://用户名:密码@host:/path/to/repository
     # 拉代码没问题的话可以不用跑这俩条命令
-    # flutterGitUrl="http://$git_name:$git_passward@$flutter_git_url"
+    # flutterGitUrl="http://$git_name:$git_password@$flutter_git_url"
     # git remote set-url origin $flutterGitUrl
     checkoutBranch $flutter_branch
     git pull
@@ -263,7 +274,7 @@ function releaseiOSProject() {
     echo "开始执行iOS项目任务"
     cd $ios_path
     # 拉代码没问题的话可以不用跑这俩条命令
-    # iOSGitUrl="http://$git_name:$git_passward@$ios_git_url"
+    # iOSGitUrl="http://$git_name:$git_password@$ios_git_url"
     # git remote set-url origin $iOSGitUrl
     checkoutBranch $ios_branch
     git pull
@@ -302,6 +313,28 @@ function uploadPgyer()
     . $uploadFile -k $pgyer_api_key -d $update_description -c $pgyer_build_channel_shortcut $ipaFile
     echo "上传蒲公英任务执行完毕"
 }
+# 上传到App Store
+function uploadAppStore()
+{
+    echo "开始上传App Store"
+          #验证APP
+    xcrun altool --validate-app \
+    -f "$ipaFile" \
+    -t iOS \
+    -u "$apple_developer_name" \
+    -p "$apple_developer_password" \
+    --output-format xml        
+
+    #上传APP
+    xcrun altool --upload-app \
+    -f "$ipaFile" \
+    -t iOS \
+    -u "$apple_developer_name" \
+    -p "$apple_developer_password" \
+    --output-format xml
+
+    echo "上传App Store任务执行完毕"
+}
 # 上传ipa
 function uploadIpa()
 {
@@ -310,7 +343,7 @@ function uploadIpa()
         uploadPgyer
     else if test $ios_method = "app-store"
         then
-            echo "上传app store还没实现"
+            uploadAppStore
         fi      
     fi
 }
