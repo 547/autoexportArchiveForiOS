@@ -108,5 +108,5 @@ cd $filePath
 # 设置代理
 setProxy
 
-checkoutBranch
+checkoutBranch "$branch"
 git pull
