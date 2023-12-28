@@ -77,9 +77,9 @@ function verifyExecutionResults()
 # 切换分支
 function checkoutBranch()
 {
-    local branch=`git branch --show-current`
-    echo "当前分支：$branch"
-    if test "$branch" != "$1"
+    local branchName=`git branch --show-current`
+    echo "当前分支：$branchName"
+    if test "$branchName" != "$1"
     then
         git checkout $1
         verifyExecutionResults $?
