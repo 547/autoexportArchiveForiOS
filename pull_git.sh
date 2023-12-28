@@ -79,7 +79,7 @@ function checkoutBranch()
 {
     local branch=`git branch --show-current`
     echo "当前分支：$branch"
-    if test $branch != $1
+    if test "$branch" != "$1"
     then
         git checkout $1
         verifyExecutionResults $?
@@ -89,7 +89,7 @@ function checkoutBranch()
 # 设置代理
 function setProxy()
 {
-   if [-n $httpsProxy] && [-n $httpProxy] && [-n $allProxy] 
+   if test -n "$httpsProxy" && test -n "$httpProxy" && test -n "$allProxy"
    then
         echo "设置代理"
         export https_proxy=$httpsProxy http_proxy=$httpProxy all_proxy=$allProxy
