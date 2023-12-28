@@ -86,14 +86,16 @@ function checkoutBranch()
         echo "切到了$1分支"
     fi
 }
+
 # 拉取远程仓库的代码
 function gitPull()
 {
     # 更新远程引用
     git remote update
+
     # 检查本地分支是否落后于远程分支
     # 获取本地分支落后于远程分支的提交数
-    local commitCount=`git rev-list --count $branch..$branch@{upstream}`
+    local commitCount=$(git rev-list --count $branch..$branch@{upstream})
     echo "本地分支落后于远程分支的提交数为：$commitCount"
     if [ $commitCount -gt 0 ]
     then
@@ -103,6 +105,7 @@ function gitPull()
         echo "本地仓库与远程仓库同步，无需拉取代码。"
     fi
 }
+
 # 设置代理
 function setProxy()
 {
