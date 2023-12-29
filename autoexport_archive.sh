@@ -110,17 +110,13 @@ function verifyExecutionResults()
      exit 1
     fi
 }
-# 切换分支
-function checkoutBranch()
+# 拉取远程仓库的代码
+function pullGit()
 {
-    local branch=`git branch --show-current`
-    echo "当前分支：$branch"
-    if test $branch != $1
-    then
-        git checkout $1
-        verifyExecutionResults $?
-        echo "切到了$1分支"
-    fi
+    echo "参数 $1 $2"
+    local file=$currentPath/pull_git.sh
+    echo "拉取远程仓库的代码的脚本文件 $file"
+    . "$file" -filePath "$1" -branch "$2"
 }
 # 获取 git logs
 function getGitLogs()
@@ -155,7 +151,13 @@ function getGitLogs()
 # 拼接更新文案
 function getUpdateDescription()
 {
+    # 保存旧的 IFS 值
+    oldIFS=$IFS
+    # 设置新的 IFS 值
+    IFS=$'\n'
     local result="$environment_description\n$tips\n$ios_git_logs\n$flutter_git_logs"
+    # 恢复旧的 IFS 值
+    IFS=$oldIFS
     echo "$result"
     update_description="$result"
 }
@@ -263,13 +265,7 @@ function preparation()
 }
 function releaseFlutterProject() {
     echo "开始执行flutter项目任务"
-    cd $flutter_path
-    # http://用户名:密码@host:/path/to/repository
-    # 拉代码没问题的话可以不用跑这俩条命令
-    # flutterGitUrl="http://$git_name:$git_password@$flutter_git_url"
-    # git remote set-url origin $flutterGitUrl
-    checkoutBranch $flutter_branch
-    git pull
+    pullGit "$flutter_path" "$flutter_branch"
     verifyExecutionResults $?
     getGitLogs "flutter"
     # flutter clean
@@ -280,12 +276,7 @@ function releaseFlutterProject() {
 }
 function releaseiOSProject() {
     echo "开始执行iOS项目任务"
-    cd $ios_path
-    # 拉代码没问题的话可以不用跑这俩条命令
-    # iOSGitUrl="http://$git_name:$git_password@$ios_git_url"
-    # git remote set-url origin $iOSGitUrl
-    checkoutBranch $ios_branch
-    git pull
+    pullGit "$ios_path" "$ios_branch"
     verifyExecutionResults $?
     getGitLogs "iOS"
     pod install
@@ -315,10 +306,10 @@ function releaseiOSProject() {
 function uploadPgyer()
 {
     echo "开始上传蒲公英"
-    uploadFile=$currentPath/pgyer_upload.sh
-    echo "$ipaFile 上传到蒲公英脚本文件 $uploadFile"
+    local file=$currentPath/pgyer_upload.sh
+    echo "$ipaFile 上传到蒲公英脚本文件 $file"
     getUpdateDescription
-    . $uploadFile -k $pgyer_api_key -d $update_description -c $pgyer_build_channel_shortcut $ipaFile
+    . "$file" -k "$pgyer_api_key" -d "$update_description" -c "$pgyer_build_channel_shortcut" "$ipaFile"
     echo "上传蒲公英任务执行完毕"
 }
 # 上传到App Store
