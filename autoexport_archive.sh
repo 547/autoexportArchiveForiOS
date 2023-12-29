@@ -125,33 +125,41 @@ function checkoutBranch()
 # 获取 git logs
 function getGitLogs()
 {   
-    local branch=`git branch --show-current`
+    local branch=$(git branch --show-current)
     local logs=$(git log $branch -4 --pretty="format:\n*  %s  [%cr]")
-    local result="$1当前分支:$branch"
- 
+    local result="$1当前分支：$branch"
+    # 在 Bash 中，IFS（Internal Field Separator，内部字段分隔符）是一个特殊的变量，它决定了 Bash 如何识别单词和字段的边界12。默认情况下，IFS 的值是一个包含空格、制表符和换行符的三字符字符串。
+    # 将 IFS 设置为换行符，这样 for 循环就会在每个换行符处分割 logs 变量，而不是在空格处分割。这样，即使提交日志中包含链接，换行符也能正常工作。
+    # 保存旧的 IFS 值
+    oldIFS=$IFS
+    # 设置新的 IFS 值
+    IFS=$'\n'
     for element in $logs
     do
         result="${result}${element}"
     done
+    # 恢复旧的 IFS 值
+    IFS=$oldIFS
 
-    echo $result
+    echo "$result"
 
-    if test $1 == "flutter" 
+    if test "$1" == "flutter" 
     then
-        flutter_git_logs=$result
-    else if test $1 == "ios"
-        then
-            ios_git_logs=$result
-        fi      
+        flutter_git_logs="$result"
+    elif test "$1" == "iOS"
+    then
+        ios_git_logs="$result"
     fi
 }
+
 # 拼接更新文案
 function getUpdateDescription()
 {
     local result="$environment_description\n$tips\n$ios_git_logs\n$flutter_git_logs"
-    echo $result
-    update_description=$result
+    echo "$result"
+    update_description="$result"
 }
+
 # 校验字符串是否为空
 function checkStringValid()
 {
@@ -279,7 +287,7 @@ function releaseiOSProject() {
     checkoutBranch $ios_branch
     git pull
     verifyExecutionResults $?
-    getGitLogs "ios"
+    getGitLogs "iOS"
     pod install
     echo "开始打包"
     xcodebuild clean -scheme $ios_scheme -configuration $ios_builld_configurations -alltargets
