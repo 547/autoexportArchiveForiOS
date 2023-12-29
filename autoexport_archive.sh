@@ -346,15 +346,15 @@ function uploadAppStore()
 # 上传ipa
 function uploadIpa()
 {
-    if test $ios_method = "ad-hoc" 
+    if test "$ios_method" = "ad-hoc" 
     then
         uploadPgyer
-    else if test $ios_method = "app-store"
-        then
-            uploadAppStore
-        fi      
+    elif test "$ios_method" = "app-store"
+    then
+        uploadAppStore
     fi
 }
+
 preparation
 releaseFlutterProject
 releaseiOSProject
