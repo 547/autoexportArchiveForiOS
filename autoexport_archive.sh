@@ -5,14 +5,14 @@ set -e
 # 加载配置文件（crontab 用的自己的一套环境变量，并没有自动加载系统的配置文件，导致一些命令会找不到，例如：flutter: command not found）
 # 不是用crontab可以注释掉
 . /Users/momo/.zshrc;
-# 环境 1:开发 2:测试 3:灰度 4:生产
-environment=2
+# 环境 1:开发 2:测试 3:灰度 4:生产 5:预生产
+environment=5
 
 # flutter 项目打包需要使用的分支
-flutter_branch="dev_stock"
+flutter_branch="release_23_12_28"
 
 # iOS 项目打包需要使用的分支
-ios_branch="developer"
+ios_branch="release_1.0.63"
 
 # 打包方式 app-store、ad-hoc
 ios_method="ad-hoc"
@@ -93,6 +93,10 @@ function updateEnvironmentInfo()
         4)
         pgyer_build_channel_shortcut="iOSProduct"
         environment_description="生产环境"
+        ;;
+        5)
+        pgyer_build_channel_shortcut="iOSPreproduct"
+        environment_description="预生产环境"
         ;;
         *)
         pgyer_build_channel_shortcut="AutomaticWorkflow"
