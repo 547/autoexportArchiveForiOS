@@ -9,10 +9,10 @@ set -e
 environment=2
 
 # flutter 项目打包需要使用的分支
-flutter_branch="release_24_01_22"
+flutter_branch="dev_stock"
 
 # iOS 项目打包需要使用的分支
-ios_branch="release_1.0.65"
+ios_branch="developer"
 
 # 打包方式 app-store、ad-hoc
 ios_method="ad-hoc"
