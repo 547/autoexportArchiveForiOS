@@ -61,6 +61,100 @@ tips="❗️❗️❗️有渠道链接请务必使用渠道链接下载app❗�
 
 # 👆👆👆👆👆👆👆👆👆👆👆👆👆 上面是需要预先设置的 ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️
 
+printHelp() {
+    echo "iOS自动打包"
+    echo "例如: /bin/bash autoexport_archive.sh -environment 2 -flutterBranch dev_stock -iOSBranch developer -iOSMethod ad-hoc -flutterPath /Users/momo/Documents/AutomaticWorkflow/flutter-pin-module -iOSPath /Users/momo/Documents/AutomaticWorkflow/ios-pin/salesSystem -iOSWorkspace GreeSalesSystem.xcworkspace -iOSTarget GreeSalesSystem -iOSBuilldConfigurations Release -iOSScheme GreeSalesSystem_Release -iOSArchivePath /Users/momo/Documents/AutomaticWorkflow/output/GreeSalesSystem -iOSipaExportPath /Users/momo/Documents/AutomaticWorkflow/output/GreeSalesSystem -iOSipaName 格力动销 -iOSAdhocExportOptionsPlist /Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AdhocExportOptions.plist -iOSStoreExportOptionsPlist /Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AppStoreExportOptions.plist"
+    echo "Description:"
+    echo "  -environment                  环境 1:开发 2:测试 3:灰度 4:生产 5:预生产 和蒲公英渠道直接相关,注意项目的环境要和该值一致"
+    echo "  -flutterBranch                flutter 项目打包需要使用的分支"
+    echo "  -iOSBranch                    iOS 项目打包需要使用的分支"
+    echo "  -iOSMethod                    打包方式 app-store、ad-hoc"
+    echo "  -flutterPath                  flutter 项目绝对路径"
+    echo "  -iOSPath                      iOS 项目绝对路径"
+    echo "  -iOSWorkspace                 如：GreeSalesSystem.xcworkspace"
+    echo "  -iOSTarget                    如：GreeSalesSystem"
+    echo "  -iOSBuilldConfigurations      如：Release"
+    echo "  -iOSScheme                    如：GreeSalesSystem_Release"
+    echo "  -iOSArchivePath               归档输出路径(绝对路径)"
+    echo "  -iOSipaExportPath             ipa输出路径(绝对路径)"
+    echo "  -iOSipaName                   ipa名称"
+    echo "  -iOSAdhocExportOptionsPlist   手动打包输出的adhoc ExportOptions.plist的绝对路径"
+    echo "  -iOSStoreExportOptionsPlist   手动打包输出的app store ExportOptions.plist的绝对路径"
+    echo "  -tips                         提示文案"
+    echo "  -help                         帮助文档"
+    exit 1
+}
+
+for ((i=1;i<=$#;i++)); do
+  if [ ${!i} = "-environment" ] ; then
+    ((i++))
+    environment=${!i}
+  fi
+  if [ ${!i} = "-flutterBranch" ] ; then
+    ((i++))
+    flutter_branch=${!i}
+  fi
+  if [ ${!i} = "-iOSBranch" ] ; then
+    ((i++))
+    ios_branch=${!i}
+  fi
+  if [ ${!i} = "-iOSMethod" ] ; then
+    ((i++))
+    ios_method=${!i}
+  fi
+  if [ ${!i} = "-flutterPath" ] ; then
+    ((i++))
+    flutter_path=${!i}
+  fi
+    if [ ${!i} = "-iOSPath" ] ; then
+    ((i++))
+    ios_path=${!i}
+  fi
+  if [ ${!i} = "-iOSWorkspace" ] ; then
+    ((i++))
+    ios_workspace=${!i}
+  fi
+  if [ ${!i} = "-iOSTarget" ] ; then
+    ((i++))
+    ios_target=${!i}
+  fi
+    if [ ${!i} = "-iOSBuilldConfigurations" ] ; then
+    ((i++))
+    ios_builld_configurations=${!i}
+  fi
+  if [ ${!i} = "-iOSScheme" ] ; then
+    ((i++))
+    ios_scheme=${!i}
+  fi
+  if [ ${!i} = "-iOSArchivePath" ] ; then
+    ((i++))
+    ios_archive_path=${!i}
+  fi
+    if [ ${!i} = "-iOSipaExportPath" ] ; then
+    ((i++))
+    ios_ipa_export_path=${!i}
+  fi
+  if [ ${!i} = "-iOSipaName" ] ; then
+    ((i++))
+    ios_ipa_name=${!i}
+  fi
+  if [ ${!i} = "-iOSAdhocExportOptionsPlist" ] ; then
+    ((i++))
+    ios_adhoc_export_options_plist=${!i}
+  fi
+  if [ ${!i} = "-iOSStoreExportOptionsPlist" ] ; then
+    ((i++))
+    ios_app_store_export_options_plist=${!i}
+  fi
+  if [ ${!i} = "-tips" ] ; then
+    ((i++))
+    tips=${!i}
+  fi
+  if [ ${!i} = "-help" ] ; then
+    printHelp
+  fi
+done
+
 # 蒲公英所需更新指定的渠道短链接（到对应应用的渠道下面查看）
 pgyer_build_channel_shortcut=""
 # 自定义版本更新描述
