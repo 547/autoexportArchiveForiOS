@@ -126,7 +126,7 @@ function pullGit()
 function getGitLogs()
 {   
     local branch=$(git branch --show-current)
-    local logs=$(git log --no-merges $branch -4 --pretty="format:\n*  %s  [%cr]")
+    local logs=$(git log --no-merges $branch -5 --pretty="format:\n* %s [%ad]" --date=format:"%Y/%m/%d %H:%M:%S")
     local result="$1当前分支：$branch"
     # 在 Bash 中，IFS（Internal Field Separator，内部字段分隔符）是一个特殊的变量，它决定了 Bash 如何识别单词和字段的边界12。默认情况下，IFS 的值是一个包含空格、制表符和换行符的三字符字符串。
     # 将 IFS 设置为换行符，这样 for 循环就会在每个换行符处分割 logs 变量，而不是在空格处分割。这样，即使提交日志中包含链接，换行符也能正常工作。
