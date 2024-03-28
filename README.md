@@ -24,6 +24,23 @@ MAILTO="xxxxxx@163.com"
 #输出所有的定时任务
 crontab -l
 ```
+### 通过文件批量添加Crontab 任务
+1、首先，创建一个文本文件（例如 crontab_jobs.txt），在这个文件中列出你想要添加的所有crontab任务，每个任务占一行。
+2、打开终端，使用 crontab crontab_jobs.txt 命令来导入你的crontab任务。
+``` shell
+# 该命令会覆盖当前的 crontab 任务
+crontab crontab_jobs.txt
+```
+#### 如果想要保留当前的 crontab 任务，并添加新的任务， 可以使用以下方法：
+``` shell
+# 1、将当前的 crontab 任务导出到current_jobs.txt文件中
+# 2、将新的任务添加到current_jobs.txt文件的末尾
+# 3、运行 crontab current_jobs.txt 命令导入所有任务
+crontab -l > current_jobs.txt
+
+crontab current_jobs.txt
+```
+
 ## Crontab 定时打包遇到的问题
 
 ### Crontab 任务不执行的问题
