@@ -4,7 +4,8 @@ set -e
 
 # 加载配置文件（crontab 用的自己的一套环境变量，并没有自动加载系统的配置文件，导致一些命令会找不到，例如：flutter: command not found）
 # 不是用crontab可以注释掉
-. /Users/momo/.zshrc;
+# 更新：为了不影响其他不使用crontab的场景，考虑直接在crontab任务设置中加载.zshrc 文件 如：*/5 * * * * /bin/bash -c 'source /Users/momo/.zshrc; /Users/momo/Documents/GitHub/autoexportArchiveForiOS/autoexport_archive.sh'
+# . /Users/momo/.zshrc;
 # 环境 1:开发 2:测试 3:灰度 4:生产 5:预生产
 environment=4
 

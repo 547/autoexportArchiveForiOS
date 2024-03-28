@@ -30,11 +30,17 @@ crontab -l
 ### flutter: command not found 问题
 原因是 crontab 用的自己的一套环境变量，并没有自动加载系统的配置文件，导致一些命令会找不到，例如：flutter: command not found
 
-解决办法：在脚本中 加载配置文件
+~~解决办法：在脚本中 加载配置文件~~
 ``` shell
 # 也是要绝对路径（要改成自己电脑的路径）
 . /Users/momo/.zshrc;
 ```
+#### 优化：为了不影响其他不使用crontab的场景，考虑直接在crontab任务设置中加载.zshrc 文件，而不是像上面那样直接在脚本中加载配置文件
+``` shell
+0 */2 * * * /bin/bash -c 'source /Users/momo/.zshrc; /Users/momo/Documents/GitHub/autoexportArchiveForiOS/autoexport_archive.sh'
+```
+
+
 [参考链接](https://blog.csdn.net/haveqing/article/details/133637796)
 
 ### No signing certificate “iOS Development“ found: No “iOS Development“ signing certificat
