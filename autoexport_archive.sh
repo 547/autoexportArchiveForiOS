@@ -6,13 +6,13 @@ set -e
 # 不是用crontab可以注释掉
 . /Users/momo/.zshrc;
 # 环境 1:开发 2:测试 3:灰度 4:生产 5:预生产
-environment=3
+environment=4
 
 # flutter 项目打包需要使用的分支
-flutter_branch="dev_stock"
+flutter_branch="release_24_03_28"
 
 # iOS 项目打包需要使用的分支
-ios_branch="developer"
+ios_branch="release_1.3.1"
 
 # 打包方式 app-store、ad-hoc
 ios_method="ad-hoc"
