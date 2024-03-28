@@ -81,6 +81,8 @@ function checkoutBranch()
     echo "当前分支：$branchName"
     if test "$branchName" != "$1"
     then
+        # 获取远程仓库的更新 (解决切换到本地没有的远程分支时报错问题)
+        git fetch
         git checkout $1
         verifyExecutionResults $?
         echo "切到了$1分支"
