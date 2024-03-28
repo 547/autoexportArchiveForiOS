@@ -4,6 +4,8 @@
 ```shell
 # 终端执行脚本命令（要改成自己电脑的路径）
 /bin/bash /Users/momo/Documents/GitHub/autoexportArchiveForiOS/autoexport_archive.sh
+# 会加载 .zshrc 文件，然后再运行脚本
+/bin/bash -c 'source /Users/momo/.zshrc; /Users/momo/Documents/GitHub/autoexportArchiveForiOS/autoexport_archive.sh'
 ```
 ## Crontab 自动执行
 ## Crontab 定时打包代码示例 (推荐俩个好用的crontab 代码网站：[crontab-generator](https://crontab-generator.org/)、[crontab guru](https://crontab.guru/))
