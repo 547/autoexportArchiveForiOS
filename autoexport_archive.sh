@@ -70,7 +70,7 @@ tips="❗️❗️❗️有渠道链接请务必使用渠道链接下载app❗�
 
 printHelp() {
     echo "iOS自动打包 注意该脚本会放弃所有未提交的本地修改"
-    echo "例如: /bin/bash autoexport_archive.sh -pgyChannel 2 -flutterBranch dev_stock -iOSBranch developer -iOSMethod ad-hoc -flutterPath /Users/momo/Documents/AutomaticWorkflow/flutter-pin-module -iOSPath /Users/momo/Documents/AutomaticWorkflow/ios-pin/salesSystem -iOSWorkspace GreeSalesSystem.xcworkspace -iOSTarget GreeSalesSystem -iOSBuilldConfigurations Release -iOSScheme GreeSalesSystem_Release -iOSApiFilePath /Users/momo/Documents/GitHub/ios-pin/salesSystem/GreeSalesSystem/Api/BaseApi/BaseApi.swift -iOSApiString 'let apiEnvironment = ApiEnvironment.' -iOSArchivePath /Users/momo/Documents/AutomaticWorkflow/output/GreeSalesSystem -iOSipaExportPath /Users/momo/Documents/AutomaticWorkflow/output/GreeSalesSystem -iOSipaName 格力动销 -iOSAdhocExportOptionsPlist /Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AdhocExportOptions.plist -iOSStoreExportOptionsPlist /Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AppStoreExportOptions.plist"
+    echo "例如: /bin/bash autoexport_archive.sh -pgyChannel 2 -flutterBranch dev_stock -iOSBranch developer -iOSMethod ad-hoc -flutterPath /Users/momo/Documents/AutomaticWorkflow/flutter-pin-module -iOSPath /Users/momo/Documents/AutomaticWorkflow/ios-pin/salesSystem -iOSWorkspace GreeSalesSystem.xcworkspace -iOSTarget GreeSalesSystem -iOSBuilldConfigurations Release -iOSScheme GreeSalesSystem_Release -iOSApiFilePath /Users/momo/Documents/AutomaticWorkflow/ios-pin/salesSystem/GreeSalesSystem/Api/BaseApi/BaseApi.swift -iOSApiString "let apiEnvironment = ApiEnvironment." -iOSArchivePath /Users/momo/Documents/AutomaticWorkflow/output/GreeSalesSystem -iOSipaExportPath /Users/momo/Documents/AutomaticWorkflow/output/GreeSalesSystem -iOSipaName 格力动销 -iOSAdhocExportOptionsPlist /Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AdhocExportOptions.plist -iOSStoreExportOptionsPlist /Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AppStoreExportOptions.plist"
     echo "Description:"
     echo "  -pgyChannel                   蒲公英渠道 1:开发 2:测试 3:灰度 4:生产 5:预生产，设置了该值就可以不用设置pgyBuildChannelShortcut、environmentDescription、iOSApiReplaceString,注意该值应该要与（environmentDescription 、iOSApiReplaceString）一一对应"
     echo "  -pgyBuildChannelShortcut      蒲公英渠道 具体的短字符串（到蒲公英去找），设置了该值就必须设置environmentDescription,注意该值应该要与（environmentDescription 、iOSApiReplaceString）一一对应"
@@ -98,91 +98,91 @@ printHelp() {
 }
 
 for ((i=1;i<=$#;i++)); do
-  if [ ${!i} = "-pgyChannel" ] ; then
+  if [ "${!i}" = "-pgyChannel" ] ; then
     ((i++))
     pgy_channel=${!i}
   fi
-  if [ ${!i} = "-pgyBuildChannelShortcut" ] ; then
+  if [ "${!i}" = "-pgyBuildChannelShortcut" ] ; then
     ((i++))
     pgyer_build_channel_shortcut=${!i}
   fi
-  if [ ${!i} = "-environmentDescription" ] ; then
+  if [ "${!i}" = "-environmentDescription" ] ; then
     ((i++))
     environment_description=${!i}
   fi
-  if [ ${!i} = "-flutterBranch" ] ; then
+  if [ "${!i}" = "-flutterBranch" ] ; then
     ((i++))
     flutter_branch=${!i}
   fi
-  if [ ${!i} = "-iOSBranch" ] ; then
+  if [ "${!i}" = "-iOSBranch" ] ; then
     ((i++))
     ios_branch=${!i}
   fi
-  if [ ${!i} = "-iOSMethod" ] ; then
+  if [ "${!i}" = "-iOSMethod" ] ; then
     ((i++))
     ios_method=${!i}
   fi
-  if [ ${!i} = "-flutterPath" ] ; then
+  if [ "${!i}" = "-flutterPath" ] ; then
     ((i++))
     flutter_path=${!i}
   fi
-  if [ ${!i} = "-iOSPath" ] ; then
+  if [ "${!i}" = "-iOSPath" ] ; then
     ((i++))
     ios_path=${!i}
   fi
-  if [ ${!i} = "-iOSWorkspace" ] ; then
+  if [ "${!i}" = "-iOSWorkspace" ] ; then
     ((i++))
     ios_workspace=${!i}
   fi
-  if [ ${!i} = "-iOSTarget" ] ; then
+  if [ "${!i}" = "-iOSTarget" ] ; then
     ((i++))
     ios_target=${!i}
   fi
-  if [ ${!i} = "-iOSBuilldConfigurations" ] ; then
+  if [ "${!i}" = "-iOSBuilldConfigurations" ] ; then
     ((i++))
     ios_builld_configurations=${!i}
   fi
-  if [ ${!i} = "-iOSScheme" ] ; then
+  if [ "${!i}" = "-iOSScheme" ] ; then
     ((i++))
     ios_scheme=${!i}
   fi
-  if [ ${!i} = "-iOSApiFilePath" ] ; then
+  if [ "${!i}" = "-iOSApiFilePath" ] ; then
     ((i++))
     ios_api_file_path=${!i}
   fi
-  if [ ${!i} = "-iOSApiString" ] ; then
+  if [ "${!i}" = "-iOSApiString" ] ; then
     ((i++))
     ios_api_string=${!i}
   fi
-  if [ ${!i} = "-iOSApiReplaceString" ] ; then
+  if [ "${!i}" = "-iOSApiReplaceString" ] ; then
     ((i++))
     ios_api_replace_string=${!i}
   fi
-  if [ ${!i} = "-iOSArchivePath" ] ; then
+  if [ "${!i}" = "-iOSArchivePath" ] ; then
     ((i++))
     ios_archive_path=${!i}
   fi
-  if [ ${!i} = "-iOSipaExportPath" ] ; then
+  if [ "${!i}" = "-iOSipaExportPath" ] ; then
     ((i++))
     ios_ipa_export_path=${!i}
   fi
-  if [ ${!i} = "-iOSipaName" ] ; then
+  if [ "${!i}" = "-iOSipaName" ] ; then
     ((i++))
     ios_ipa_name=${!i}
   fi
-  if [ ${!i} = "-iOSAdhocExportOptionsPlist" ] ; then
+  if [ "${!i}" = "-iOSAdhocExportOptionsPlist" ] ; then
     ((i++))
     ios_adhoc_export_options_plist=${!i}
   fi
-  if [ ${!i} = "-iOSStoreExportOptionsPlist" ] ; then
+  if [ "${!i}" = "-iOSStoreExportOptionsPlist" ] ; then
     ((i++))
     ios_app_store_export_options_plist=${!i}
   fi
-  if [ ${!i} = "-tips" ] ; then
+  if [ "${!i}" = "-tips" ] ; then
     ((i++))
     tips=${!i}
   fi
-  if [ ${!i} = "-help" ] ; then
+  if [ "${!i}" = "-help" ] ; then
     printHelp
   fi
 done
@@ -255,7 +255,7 @@ function changeiOSApiEnvironment()
 {
     local file=$currentPath/change_file.sh
     echo "修改iOS api 环境 $ios_api_file_path $ios_api_string $ios_api_replace_string"
-    . "$file" -f "$ios_api_file_path" -r 1 -o "$ios_api_string" -n "$ios_api_replace_string"
+    . "$file" -filePath "$ios_api_file_path" -changeRow 1 -oldContent "$ios_api_string" -newContent "$ios_api_replace_string"
 }
 # 拉取远程仓库的代码
 function pullGit()

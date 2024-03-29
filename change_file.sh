@@ -4,24 +4,38 @@ set -e
 
 printHelp() {
     echo "修改指定文件的内容需要传入 文件的绝对路径 原内容 新内容"
-    echo "例如: /bin/bash change_file.sh -f /Users/momo/Documents/GitHub/autoexportArchiveForiOS/test.txt -o "const bool SINGLE_COMPILE = true" -n "const bool SINGLE_COMPILE = false" -r 1"
+    echo "例如: /bin/bash change_file.sh -filePath /Users/momo/Documents/GitHub/autoexportArchiveForiOS/test.txt -oldContent "const bool SINGLE_COMPILE = true" -newContent "const bool SINGLE_COMPILE = false" -changeRow 1"
     echo "Description:"
-    echo "  -f filePath                      文件的绝对路径"
-    echo "  -o oldContent                    原内容"
-    echo "  -n newContent                    新内容"
-    echo "  -r changeRow                     是否修改整行的内容 1： 是"
-    echo "  -h help                          帮助文档"
+    echo "  -filePath                      文件的绝对路径"
+    echo "  -oldContent                    原内容"
+    echo "  -newContent                    新内容"
+    echo "  -changeRow                     是否修改整行的内容 1： 是"
+    echo "  -help                          帮助文档"
     exit 1
 }
-while getopts 'f:o:n:r:h' OPT; do
-    case $OPT in
-        f) filePath="$OPTARG";;
-        o) oldContent="$OPTARG";;
-        n) newContent="$OPTARG";;
-        r) changeRow="$OPTARG";;
-        ?) printHelp;;
-    esac
+for ((i=1;i<=$#;i++)); do
+  if [ "${!i}" = "-filePath" ] ; then
+    ((i++))
+    filePath=${!i}
+  fi
+  if [ "${!i}" = "-oldContent" ] ; then
+    ((i++))
+    oldContent=${!i}
+  fi
+  if [ "${!i}" = "-newContent" ] ; then
+    ((i++))
+    newContent=${!i}
+  fi
+  if [ "${!i}" = "-changeRow" ] ; then
+    ((i++))
+    changeRow=${!i}
+  fi
+  if [ "${!i}" = "-help" ] ; then
+    printHelp
+  fi
 done
+
+echo "参数 $filePath $oldContent $newContent $changeRow"
 
 
 # sed编辑命令：【sed -i "s/a/b/g" test.txt】
@@ -43,11 +57,5 @@ else
     # 使用sed命令替换文件中的文本
     sed -i "" "s/${oldContent}/${newContent}/g" $filePath
 fi
-
-
-
-
-
-
 
 echo "文件内容已经成功修改！ "

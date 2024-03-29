@@ -17,27 +17,27 @@ printHelp() {
 }
 
 for ((i=1;i<=$#;i++)); do
-  if [ ${!i} = "-filePath" ] ; then
+  if [ "${!i}" = "-filePath" ] ; then
     ((i++))
     filePath=${!i}
   fi
-  if [ ${!i} = "-branch" ] ; then
+  if [ "${!i}" = "-branch" ] ; then
     ((i++))
     branch=${!i}
   fi
-  if [ ${!i} = "-httpsProxy" ] ; then
+  if [ "${!i}" = "-httpsProxy" ] ; then
     ((i++))
     httpsProxy=${!i}
   fi
-  if [ ${!i} = "-httpProxy" ] ; then
+  if [ "${!i}" = "-httpProxy" ] ; then
     ((i++))
     httpProxy=${!i}
   fi
-  if [ ${!i} = "-allProxy" ] ; then
+  if [ "${!i}" = "-allProxy" ] ; then
     ((i++))
     allProxy=${!i}
   fi
-  if [ ${!i} = "-help" ] ; then
+  if [ "${!i}" = "-help" ] ; then
     printHelp
   fi
 done
