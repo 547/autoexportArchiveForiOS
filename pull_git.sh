@@ -4,7 +4,7 @@ set -e
 
 
 printHelp() {
-    echo "拉取git仓库代码"
+    echo "拉取git仓库代码 注意该脚本会放弃所有未提交的本地修改"
     echo "例如: /bin/bash pull_git.sh -filePath /Users/momo/Documents/GitHub/autoexportArchiveForiOS -branch main -httpsProxy http://127.0.0.1:7890 -httpProxy http://127.0.0.1:7890 -allProxy socks5://127.0.0.1:7890"
     echo "Description:"
     echo "  -filePath                      文件的绝对路径"
@@ -83,6 +83,8 @@ function checkoutBranch()
     then
         # 获取远程仓库的更新 (解决切换到本地没有的远程分支时报错问题)
         git fetch
+        # 放弃所有未提交的本地修改
+        git checkout .
         git checkout $1
         verifyExecutionResults $?
         echo "切到了$1分支"
@@ -92,6 +94,8 @@ function checkoutBranch()
 # 拉取远程仓库的代码
 function gitPull()
 {
+    # 放弃所有未提交的本地修改
+    git checkout .
     # 更新远程引用
     git remote update
 

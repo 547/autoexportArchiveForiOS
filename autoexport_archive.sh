@@ -69,7 +69,7 @@ tips="❗️❗️❗️有渠道链接请务必使用渠道链接下载app❗�
 # 👆👆👆👆👆👆👆👆👆👆👆👆👆 上面是需要预先设置的 ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️
 
 printHelp() {
-    echo "iOS自动打包"
+    echo "iOS自动打包 注意该脚本会放弃所有未提交的本地修改"
     echo "例如: /bin/bash autoexport_archive.sh -pgyChannel 2 -flutterBranch dev_stock -iOSBranch developer -iOSMethod ad-hoc -flutterPath /Users/momo/Documents/AutomaticWorkflow/flutter-pin-module -iOSPath /Users/momo/Documents/AutomaticWorkflow/ios-pin/salesSystem -iOSWorkspace GreeSalesSystem.xcworkspace -iOSTarget GreeSalesSystem -iOSBuilldConfigurations Release -iOSScheme GreeSalesSystem_Release -iOSApiFilePath /Users/momo/Documents/GitHub/ios-pin/salesSystem/GreeSalesSystem/Api/BaseApi/BaseApi.swift -iOSApiString 'let apiEnvironment = ApiEnvironment.' -iOSArchivePath /Users/momo/Documents/AutomaticWorkflow/output/GreeSalesSystem -iOSipaExportPath /Users/momo/Documents/AutomaticWorkflow/output/GreeSalesSystem -iOSipaName 格力动销 -iOSAdhocExportOptionsPlist /Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AdhocExportOptions.plist -iOSStoreExportOptionsPlist /Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AppStoreExportOptions.plist"
     echo "Description:"
     echo "  -pgyChannel                   蒲公英渠道 1:开发 2:测试 3:灰度 4:生产 5:预生产，设置了该值就可以不用设置pgyBuildChannelShortcut、environmentDescription、iOSApiReplaceString,注意该值应该要与（environmentDescription 、iOSApiReplaceString）一一对应"
@@ -424,6 +424,7 @@ function releaseiOSProject() {
     echo "开始执行iOS项目任务"
     pullGit "$ios_path" "$ios_branch"
     verifyExecutionResults $?
+    changeiOSApiEnvironment
     getGitLogs "iOS"
     pod install
     echo "开始打包"
