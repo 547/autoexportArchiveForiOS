@@ -253,7 +253,7 @@ function verifyExecutionResults()
 function changeiOSApiEnvironment()
 {
     local file=$currentPath/change_file.sh
-    echo "修改iOS api 环境 $iOSApiReplaceString"
+    echo "修改iOS api 环境 $ios_api_file_path $ios_api_string $ios_api_replace_string"
     . "$file" -f "$ios_api_file_path" -r 1 -o "$ios_api_string" -n "$ios_api_replace_string"
 }
 # 拉取远程仓库的代码
