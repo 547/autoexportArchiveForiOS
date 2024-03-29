@@ -240,6 +240,7 @@ function updateEnvironmentInfo()
   fi
   echo $pgyer_build_channel_shortcut
   echo $environment_description
+  echo $ios_api_replace_string
 }
 # 校验执行结果
 function verifyExecutionResults()
