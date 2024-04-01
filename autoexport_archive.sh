@@ -7,8 +7,8 @@ set -e
 # 更新：为了不影响其他不使用crontab的场景，考虑直接在crontab任务设置中加载.zshrc 文件 如：*/5 * * * * /bin/bash -c 'source /Users/momo/.zshrc; /Users/momo/Documents/GitHub/autoexportArchiveForiOS/autoexport_archive.sh'
 # . /Users/momo/.zshrc;
 
-# 蒲公英渠道 1:开发 2:测试 3:灰度 4:生产 5:预生产
-pgy_channel=4
+# 环境 1:开发 2:测试 3:灰度 4:生产 5:预生产
+environment=4
 # flutter 项目打包需要使用的分支
 flutter_branch="release_24_03_28"
 
@@ -70,9 +70,9 @@ tips="❗️❗️❗️有渠道链接请务必使用渠道链接下载app❗�
 
 printHelp() {
     echo "iOS自动打包 注意该脚本会放弃所有未提交的本地修改"
-    echo "例如: /bin/bash autoexport_archive.sh -pgyChannel 2 -flutterBranch dev_stock -iOSBranch developer -iOSMethod ad-hoc -flutterPath /Users/momo/Documents/AutomaticWorkflow/flutter-pin-module -iOSPath /Users/momo/Documents/AutomaticWorkflow/ios-pin/salesSystem -iOSWorkspace GreeSalesSystem.xcworkspace -iOSTarget GreeSalesSystem -iOSBuilldConfigurations Release -iOSScheme GreeSalesSystem_Release -iOSApiFilePath /Users/momo/Documents/AutomaticWorkflow/ios-pin/salesSystem/GreeSalesSystem/Api/BaseApi/BaseApi.swift -iOSApiString "let apiEnvironment = ApiEnvironment." -iOSArchivePath /Users/momo/Documents/AutomaticWorkflow/output/GreeSalesSystem -iOSipaExportPath /Users/momo/Documents/AutomaticWorkflow/output/GreeSalesSystem -iOSipaName 格力动销 -iOSAdhocExportOptionsPlist /Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AdhocExportOptions.plist -iOSStoreExportOptionsPlist /Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AppStoreExportOptions.plist"
+    echo "例如: /bin/bash autoexport_archive.sh -environment 2 -flutterBranch dev_stock -iOSBranch developer -iOSMethod ad-hoc -flutterPath /Users/momo/Documents/AutomaticWorkflow/flutter-pin-module -iOSPath /Users/momo/Documents/AutomaticWorkflow/ios-pin/salesSystem -iOSWorkspace GreeSalesSystem.xcworkspace -iOSTarget GreeSalesSystem -iOSBuilldConfigurations Release -iOSScheme GreeSalesSystem_Release -iOSApiFilePath /Users/momo/Documents/AutomaticWorkflow/ios-pin/salesSystem/GreeSalesSystem/Api/BaseApi/BaseApi.swift -iOSApiString "let apiEnvironment = ApiEnvironment." -iOSArchivePath /Users/momo/Documents/AutomaticWorkflow/output/GreeSalesSystem -iOSipaExportPath /Users/momo/Documents/AutomaticWorkflow/output/GreeSalesSystem -iOSipaName 格力动销 -iOSAdhocExportOptionsPlist /Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AdhocExportOptions.plist -iOSStoreExportOptionsPlist /Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AppStoreExportOptions.plist"
     echo "Description:"
-    echo "  -pgyChannel                   蒲公英渠道 1:开发 2:测试 3:灰度 4:生产 5:预生产，设置了该值就可以不用设置pgyBuildChannelShortcut、environmentDescription、iOSApiReplaceString,注意该值应该要与（environmentDescription 、iOSApiReplaceString）一一对应"
+    echo "  -environment                  环境 1:开发 2:测试 3:灰度 4:生产 5:预生产，设置了该值就可以不用设置pgyBuildChannelShortcut、environmentDescription、iOSApiReplaceString,注意该值应该要与（environmentDescription 、iOSApiReplaceString）一一对应"
     echo "  -pgyBuildChannelShortcut      蒲公英渠道 具体的短字符串（到蒲公英去找），设置了该值就必须设置environmentDescription,注意该值应该要与（environmentDescription 、iOSApiReplaceString）一一对应"
     echo "  -environmentDescription       环境描述,设置了该值就必须设置pgyBuildChannelShortcut,注意该值应该要与（pgyChannel 、iOSApiReplaceString）一一对应"
     echo "  -flutterBranch                flutter 项目打包需要使用的分支"
@@ -98,9 +98,9 @@ printHelp() {
 }
 
 for ((i=1;i<=$#;i++)); do
-  if [ "${!i}" = "-pgyChannel" ] ; then
+  if [ "${!i}" = "-environment" ] ; then
     ((i++))
-    pgy_channel=${!i}
+    environment=${!i}
   fi
   if [ "${!i}" = "-pgyBuildChannelShortcut" ] ; then
     ((i++))
@@ -203,9 +203,9 @@ iOSArchive="$ios_archive_path/$ios_target.xcarchive"
 # 根据环境更新相关的信息
 function updateEnvironmentInfo()
 {
-  if [ -z "$pgyer_build_channel_shortcut" ]
+  if [[ -z "$pgyer_build_channel_shortcut" || -z "$environment_description" || -z "$ios_api_replace_string" ]];
     then
-      case $pgy_channel in
+      case $environment in
           1) 
           pgyer_build_channel_shortcut="iOSDev"
           environment_description="开发环境"
@@ -253,9 +253,11 @@ function verifyExecutionResults()
 # 修改iOS api 环境
 function changeiOSApiEnvironment()
 {
+  if [[ -n "$ios_api_file_path" && -n "$ios_api_string" && -n "$ios_api_replace_string" ]]; then
     local file=$currentPath/change_file.sh
     echo "修改iOS api 环境 $ios_api_file_path $ios_api_string $ios_api_replace_string"
     . "$file" -filePath "$ios_api_file_path" -changeRow 1 -oldContent "$ios_api_string" -newContent "$ios_api_replace_string"
+  fi
 }
 # 拉取远程仓库的代码
 function pullGit()
