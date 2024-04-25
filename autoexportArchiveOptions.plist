@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>pgyerApiKey</key>
+	<string>c6c5e3109ff59647d57f0c6c5944bb5f</string>
+	<key>pgyerBuildChannelShortcuts</key>
+	<dict>
+		<key>preproduct</key>
+		<string>iOSPreproduct</string>
+		<key>test</key>
+		<string>iOSTest_gree</string>
+		<key>canary</key>
+		<string>iOSCanary</string>
+		<key>product</key>
+		<string>iOSProduct</string>
+		<key>dev</key>
+		<string>iOSDev</string>
+	</dict>
+	<key>iOSApiFilePath</key>
+	<string>/Users/momo/Documents/AutomaticWorkflow/ios-pin/salesSystem/GreeSalesSystem/Api/BaseApi/BaseApi.swift</string>
+	<key>iOSApiString</key>
+	<string>let apiEnvironment = ApiEnvironment.</string>
+	<key>iOSMethod</key>
+	<string>ad-hoc</string>
+	<key>flutterPath</key>
+	<string>/Users/momo/Documents/AutomaticWorkflow/flutter-pin-module</string>
+	<key>iOSPath</key>
+	<string>/Users/momo/Documents/AutomaticWorkflow/ios-pin/salesSystem</string>
+	<key>iOSWorkspace</key>
+	<string>GreeSalesSystem.xcworkspace</string>
+	<key>iOSTarget</key>
+	<string>GreeSalesSystem</string>
+	<key>iOSBuilldConfigurations</key>
+	<string>Release</string>
+	<key>iOSScheme</key>
+	<string>GreeSalesSystem_Release</string>
+	<key>iOSArchivePath</key>
+	<string>/Users/momo/Documents/AutomaticWorkflow/output/GreeSalesSystem</string>
+	<key>iOSipaExportPath</key>
+	<string>/Users/momo/Documents/AutomaticWorkflow/output/GreeSalesSystem</string>
+	<key>iOSipaName</key>
+	<string>格力动销</string>
+	<key>iOSAdhocExportOptionsPlist</key>
+	<string>/Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AdhocExportOptions.plist</string>
+	<key>iOSStoreExportOptionsPlist</key>
+	<string>/Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AppStoreExportOptions.plist</string>
+	<key>tips</key>
+	<string>❗️❗️❗️有渠道链接请务必使用渠道链接下载app❗️❗️❗️</string>
+</dict>
+</plist>
