@@ -65,6 +65,11 @@ ios_adhoc_export_options_plist=""
 # 手动打包输出的app store ExportOptions.plist
 ios_app_store_export_options_plist=""
 
+# 蒲公英所需更新指定的渠道短链接（到对应应用的渠道下面查看）
+pgyer_build_channel_shortcut=""
+# 自定义版本更新描述
+environment_description=""
+
 #提示文案
 tips=""
 
@@ -125,10 +130,7 @@ for ((i=1;i<=$#;i++)); do
   fi
 done
 
-# 蒲公英所需更新指定的渠道短链接（到对应应用的渠道下面查看）
-pgyer_build_channel_shortcut=""
-# 自定义版本更新描述
-environment_description=""
+
 #git log
 flutter_git_logs=""
 ios_git_logs=""
@@ -141,9 +143,11 @@ iOSArchive="$ios_archive_path/$ios_target.xcarchive"
 # 读取options_plist文件的参数
 function readeOptionsPlist()
 {
-    fileExist=$(checkFileExists $options_plist)
-    if fileExist 
-    then
+      echo "options_plist文件绝对路径： $options_plist"
+      checkFileExists $options_plist "options_plist文件绝对路径不存在"
+      verifyExecutionResults $?
+      echo "====== 开始读取options_plist文件的参数 ======"
+      echo "$options_plist 存在"
       pgyer_api_key=$(/usr/libexec/PlistBuddy -c "Print ::pgyerApiKey" $options_plist)
       ios_api_file_path=$(/usr/libexec/PlistBuddy -c "Print ::iOSApiFilePath" $options_plist)
       ios_api_string=$(/usr/libexec/PlistBuddy -c "Print ::iOSApiString" $options_plist)
@@ -164,7 +168,7 @@ function readeOptionsPlist()
       ios_api_replace_string=$(/usr/libexec/PlistBuddy -c "Print :iosApiReplaceStrings:$environment" $options_plist)
       tips=$(/usr/libexec/PlistBuddy -c "Print ::tips" $options_plist)
 
-      echo "  ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️下面是打包参数文件（optionsPlist）读取到的参数❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️"
+      echo "  ❗️❗️❗️❗️下面是打包参数文件（optionsPlist）读取到的参数❗️❗️❗️❗️"
       echo "蒲公英API key:$pgyer_api_key"
       echo "iOS项目设置api环境的文件绝对路径:$ios_api_file_path"
       echo "iOS项目设置api环境的字符串:$ios_api_string"
@@ -184,7 +188,7 @@ function readeOptionsPlist()
       echo "环境描述:$environment_description"
       echo "iOS项目设置api环境的替换字符串:$ios_api_replace_string"
       echo "提示文案:$tips"
-    fi
+      echo "====== 结束读取options_plist文件的参数 ======"
 }
 # 校验执行结果
 function verifyExecutionResults()
