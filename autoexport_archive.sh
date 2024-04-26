@@ -163,9 +163,27 @@ function readeOptionsPlist()
       environment_description=$(/usr/libexec/PlistBuddy -c "Print :environmentDescriptions:$environment" $options_plist)
       ios_api_replace_string=$(/usr/libexec/PlistBuddy -c "Print :iosApiReplaceStrings:$environment" $options_plist)
       tips=$(/usr/libexec/PlistBuddy -c "Print ::tips" $options_plist)
-      echo $pgyer_build_channel_shortcut
-      echo $environment_description
-      echo $ios_api_replace_string
+
+      echo "  ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️下面是打包参数文件（optionsPlist）读取到的参数❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️"
+      echo "蒲公英API key:$pgyer_api_key"
+      echo "iOS项目设置api环境的文件绝对路径:$ios_api_file_path"
+      echo "iOS项目设置api环境的字符串:$ios_api_string"
+      echo "iOS 打包方式:$ios_method"
+      echo "flutter 项目绝对路径:$flutter_path"
+      echo "iOS 项目绝对路径:$ios_path"
+      echo "iOS workspace:$ios_workspace"
+      echo "iOS target:$ios_target"
+      echo "iOS builld configurations:$ios_builld_configurations"
+      echo "iOS scheme:$ios_scheme"
+      echo "归档输出路径(绝对路径)$ios_archive_path"
+      echo "ipa输出路径(绝对路径):$ios_ipa_export_path"
+      echo "ipa名称:$ios_ipa_name"
+      echo "手动打包输出的adhoc ExportOptions.plist的绝对路径:$ios_adhoc_export_options_plist"
+      echo "手动打包输出的app store ExportOptions.plist的绝对路径:$ios_app_store_export_options_plist"
+      echo "蒲公英渠道短字符串:$pgyer_build_channel_shortcut"
+      echo "环境描述:$environment_description"
+      echo "iOS项目设置api环境的替换字符串:$ios_api_replace_string"
+      echo "提示文案:$tips"
     fi
 }
 # 校验执行结果
