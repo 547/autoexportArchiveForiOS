@@ -139,7 +139,6 @@ update_description=""
 
 # 当前脚本所在的文件路径
 currentPath=$(cd `dirname "$0"` && pwd)
-iOSArchive="$ios_archive_path/$ios_target.xcarchive"
 # 读取options_plist文件的参数
 function readeOptionsPlist()
 {
@@ -189,6 +188,9 @@ function readeOptionsPlist()
       echo "iOS项目设置api环境的替换字符串:$ios_api_replace_string"
       echo "提示文案:$tips"
       echo "====== 结束读取options_plist文件的参数 ======"
+      echo "环境:$environment"
+      echo "flutter 项目打包需要使用的分支:$flutter_branch"
+      echo "iOS 项目打包需要使用的分支:$ios_branch"
 }
 # 校验执行结果
 function verifyExecutionResults()
@@ -378,6 +380,9 @@ function releaseiOSProject() {
     echo "开始打包"
     xcodebuild clean -scheme $ios_scheme -configuration $ios_builld_configurations -alltargets
     echo "clean 成功"
+    iOSArchive="$ios_archive_path/$ios_target.xcarchive"
+    echo "iOS xcarchive绝对路径:$iOSArchive"
+    echo "开始 archive"
     xcodebuild archive -workspace $ios_workspace -scheme $ios_scheme -configuration $ios_builld_configurations -destination generic/platform=ios -archivePath $iOSArchive
     verifyExecutionResults $?
     # .xcarchive是个文件夹不是文件
