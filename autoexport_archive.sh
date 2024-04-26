@@ -7,16 +7,19 @@ set -e
 # 更新：为了不影响其他不使用crontab的场景，考虑直接在crontab任务设置中加载.zshrc 文件 如：*/5 * * * * /bin/bash -c 'source /Users/momo/.zshrc; /Users/momo/Documents/GitHub/autoexportArchiveForiOS/autoexport_archive.sh'
 # . /Users/momo/.zshrc;
 
-# 环境 1:开发 2:测试 3:灰度 4:生产 5:预生产
-environment=4
+# 环境 develop:开发 test:测试 gray:灰度 product:生产 preproduct:预生产
+environment=""
 # flutter 项目打包需要使用的分支
-flutter_branch="release_24_03_28"
+flutter_branch=""
 
 # iOS 项目打包需要使用的分支
-ios_branch="release_1.3.1"
+ios_branch=""
+
+# 打包参数文件的绝对路径（就是下面那些是不常改的参数就放在这个文件，脚本会从这个文件中读取参数）
+options_plist=""
 
 # 打包方式 app-store、ad-hoc
-ios_method="ad-hoc"
+ios_method=""
 
 # git仓库用户名(拉代码没问题的话可以不用配置)
 git_name=""
@@ -26,74 +29,82 @@ git_password=""
 apple_developer_name=""
 # apple developer 密码 (不上传app store的话可以不用配置)
 apple_developer_password=""
-#/ 蒲公英API key
-pgyer_api_key="c6c5e3109ff59647d57f0c6c5944bb5f"
+# 蒲公英API key
+pgyer_api_key=""
 
 # flutter 项目绝对路径
-flutter_path="/Users/momo/Documents/AutomaticWorkflow/flutter-pin-module"
+flutter_path=""
 # flutter 项目远程仓库地址(只要 http:# 后面的) (拉代码没问题的话可以不用配置)
-flutter_git_url="git.upms.gree.com/dept5-front/flutter-pin-module.git"
+flutter_git_url=""
 
 
 # iOS 项目绝对路径
-ios_path="/Users/momo/Documents/AutomaticWorkflow/ios-pin/salesSystem"
+ios_path=""
 # iOS 项目远程仓库地址(只要 http:# 后面的) (拉代码没问题的话可以不用配置)
-ios_git_url="git.upms.gree.com/dept5-front/ios-pin.git"
+ios_git_url=""
 
-ios_workspace="GreeSalesSystem.xcworkspace"
-ios_target="GreeSalesSystem"
-ios_builld_configurations="Release"
-ios_scheme="GreeSalesSystem_Release"
+ios_workspace=""
+ios_target=""
+ios_builld_configurations=""
+ios_scheme=""
 # iOS项目设置api环境的文件绝对路径
-ios_api_file_path="/Users/momo/Documents/GitHub/ios-pin/salesSystem/GreeSalesSystem/Api/BaseApi/BaseApi.swift"
+ios_api_file_path=""
 # iOS项目设置api环境的字符串
 ios_api_string=""
 # iOS项目设置api环境的替换字符串
 ios_api_replace_string=""
 
 # 归档输出路径
-ios_archive_path="/Users/momo/Documents/AutomaticWorkflow/output/GreeSalesSystem"
+ios_archive_path=""
 # ipa输出路径
-ios_ipa_export_path="/Users/momo/Documents/AutomaticWorkflow/output/GreeSalesSystem"
+ios_ipa_export_path=""
 # ipa名称
-ios_ipa_name="格力动销"
+ios_ipa_name=""
 # 手动打包输出的adhoc ExportOptions.plist
-ios_adhoc_export_options_plist="/Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AdhocExportOptions.plist"
+ios_adhoc_export_options_plist=""
 # 手动打包输出的app store ExportOptions.plist
-ios_app_store_export_options_plist="/Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AppStoreExportOptions.plist"
+ios_app_store_export_options_plist=""
+
+# 蒲公英所需更新指定的渠道短链接（到对应应用的渠道下面查看）
+pgyer_build_channel_shortcut=""
+# 自定义版本更新描述
+environment_description=""
 
 #提示文案
-tips="❗️❗️❗️有渠道链接请务必使用渠道链接下载app❗️❗️❗️"
+tips=""
 
 
 # 👆👆👆👆👆👆👆👆👆👆👆👆👆 上面是需要预先设置的 ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️
 
 printHelp() {
     echo "iOS自动打包 注意该脚本会放弃所有未提交的本地修改"
-    echo "例如: /bin/bash autoexport_archive.sh -environment 2 -flutterBranch dev_stock -iOSBranch developer -iOSMethod ad-hoc -flutterPath /Users/momo/Documents/AutomaticWorkflow/flutter-pin-module -iOSPath /Users/momo/Documents/AutomaticWorkflow/ios-pin/salesSystem -iOSWorkspace GreeSalesSystem.xcworkspace -iOSTarget GreeSalesSystem -iOSBuilldConfigurations Release -iOSScheme GreeSalesSystem_Release -iOSApiFilePath /Users/momo/Documents/AutomaticWorkflow/ios-pin/salesSystem/GreeSalesSystem/Api/BaseApi/BaseApi.swift -iOSApiString "let apiEnvironment = ApiEnvironment." -iOSArchivePath /Users/momo/Documents/AutomaticWorkflow/output/GreeSalesSystem -iOSipaExportPath /Users/momo/Documents/AutomaticWorkflow/output/GreeSalesSystem -iOSipaName 格力动销 -iOSAdhocExportOptionsPlist /Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AdhocExportOptions.plist -iOSStoreExportOptionsPlist /Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AppStoreExportOptions.plist"
+    echo "例: /bin/bash autoexport_archive.sh -environment test -flutterBranch dev_stock -iOSBranch developer -optionsPlist /Users/momo/Documents/GitHub/autoexportArchiveForiOS/autoexportArchiveOptions.plist"
     echo "Description:"
-    echo "  -environment                  环境 1:开发 2:测试 3:灰度 4:生产 5:预生产，设置了该值就可以不用设置pgyBuildChannelShortcut、environmentDescription、iOSApiReplaceString,注意该值应该要与（environmentDescription 、iOSApiReplaceString）一一对应"
-    echo "  -pgyBuildChannelShortcut      蒲公英渠道 具体的短字符串（到蒲公英去找），设置了该值就必须设置environmentDescription,注意该值应该要与（environmentDescription 、iOSApiReplaceString）一一对应"
-    echo "  -environmentDescription       环境描述,设置了该值就必须设置pgyBuildChannelShortcut,注意该值应该要与（pgyChannel 、iOSApiReplaceString）一一对应"
+    echo "  -environment                  环境 develop:开发 test:测试 gray:灰度 product:生产 preproduct:预生产。该值是 optionsPlist文件中 pgyerBuildChannelShortcuts、environmentDescriptions、iosApiReplaceStrings 所有值的key，要确保一一对应"
     echo "  -flutterBranch                flutter 项目打包需要使用的分支"
     echo "  -iOSBranch                    iOS 项目打包需要使用的分支"
-    echo "  -iOSMethod                    打包方式 app-store、ad-hoc"
-    echo "  -flutterPath                  flutter 项目绝对路径"
-    echo "  -iOSPath                      iOS 项目绝对路径"
-    echo "  -iOSWorkspace                 如：GreeSalesSystem.xcworkspace"
-    echo "  -iOSTarget                    如：GreeSalesSystem"
-    echo "  -iOSBuilldConfigurations      如：Release"
-    echo "  -iOSScheme                    如：GreeSalesSystem_Release"
-    echo "  -iOSApiFilePath               iOS项目设置api环境的文件绝对路径"
-    echo "  -iOSApiString                 iOS项目设置api环境的字符串"
-    echo "  -iOSApiReplaceString          iOS项目设置api环境的替换字符串"
-    echo "  -iOSArchivePath               归档输出路径(绝对路径)"
-    echo "  -iOSipaExportPath             ipa输出路径(绝对路径)"
-    echo "  -iOSipaName                   ipa名称"
-    echo "  -iOSAdhocExportOptionsPlist   手动打包输出的adhoc ExportOptions.plist的绝对路径"
-    echo "  -iOSStoreExportOptionsPlist   手动打包输出的app store ExportOptions.plist的绝对路径"
-    echo "  -tips                         提示文案"
+    echo "  -optionsPlist                 打包参数文件的绝对路径（就是下面那些是不常改的参数就放在这个文件，脚本会从这个文件中读取参数）"
     echo "  -help                         帮助文档"
+    echo "  ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️下面是打包参数文件（optionsPlist）key的说明❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️"
+    echo "  pgyerApiKey                   蒲公英API key（到蒲公英 个人中心-API令牌 去找）"
+    echo "  pgyerBuildChannelShortcuts    所有蒲公英渠道短字符串（到蒲公英 对应应用的 渠道 里设置）的字典，每个值的key要和environment一一对应"
+    echo "  environmentDescriptions       所有环境描述的字典,每个值的key要和environment一一对应"
+    echo "  iosApiReplaceStrings          iOS项目设置api环境的替换字符串的字典,每个值的key要和environment一一对应"
+    echo "  iOSApiFilePath                iOS项目设置api环境的文件绝对路径"
+    echo "  iOSApiString                  iOS项目设置api环境的字符串"
+    echo "  iOSMethod                     打包方式 app-store、ad-hoc"
+    echo "  flutterPath                   flutter 项目绝对路径"
+    echo "  iOSPath                       iOS 项目绝对路径"
+    echo "  iOSWorkspace                  如：GreeSalesSystem.xcworkspace"
+    echo "  iOSTarget                     如：GreeSalesSystem"
+    echo "  iOSBuilldConfigurations       如：Release"
+    echo "  iOSScheme                     如：GreeSalesSystem_Release"
+    echo "  iOSArchivePath                归档输出路径(绝对路径)"
+    echo "  iOSipaExportPath              ipa输出路径(绝对路径)"
+    echo "  iOSipaName                    ipa名称"
+    echo "  iOSAdhocExportOptionsPlist    手动打包输出的adhoc ExportOptions.plist的绝对路径"
+    echo "  iOSStoreExportOptionsPlist    手动打包输出的app store ExportOptions.plist的绝对路径"
+    echo "  tips                          提示文案"
     exit 1
 }
 
@@ -101,14 +112,6 @@ for ((i=1;i<=$#;i++)); do
   if [ "${!i}" = "-environment" ] ; then
     ((i++))
     environment=${!i}
-  fi
-  if [ "${!i}" = "-pgyBuildChannelShortcut" ] ; then
-    ((i++))
-    pgyer_build_channel_shortcut=${!i}
-  fi
-  if [ "${!i}" = "-environmentDescription" ] ; then
-    ((i++))
-    environment_description=${!i}
   fi
   if [ "${!i}" = "-flutterBranch" ] ; then
     ((i++))
@@ -118,79 +121,16 @@ for ((i=1;i<=$#;i++)); do
     ((i++))
     ios_branch=${!i}
   fi
-  if [ "${!i}" = "-iOSMethod" ] ; then
+  if [ "${!i}" = "-optionsPlist" ] ; then
     ((i++))
-    ios_method=${!i}
-  fi
-  if [ "${!i}" = "-flutterPath" ] ; then
-    ((i++))
-    flutter_path=${!i}
-  fi
-  if [ "${!i}" = "-iOSPath" ] ; then
-    ((i++))
-    ios_path=${!i}
-  fi
-  if [ "${!i}" = "-iOSWorkspace" ] ; then
-    ((i++))
-    ios_workspace=${!i}
-  fi
-  if [ "${!i}" = "-iOSTarget" ] ; then
-    ((i++))
-    ios_target=${!i}
-  fi
-  if [ "${!i}" = "-iOSBuilldConfigurations" ] ; then
-    ((i++))
-    ios_builld_configurations=${!i}
-  fi
-  if [ "${!i}" = "-iOSScheme" ] ; then
-    ((i++))
-    ios_scheme=${!i}
-  fi
-  if [ "${!i}" = "-iOSApiFilePath" ] ; then
-    ((i++))
-    ios_api_file_path=${!i}
-  fi
-  if [ "${!i}" = "-iOSApiString" ] ; then
-    ((i++))
-    ios_api_string=${!i}
-  fi
-  if [ "${!i}" = "-iOSApiReplaceString" ] ; then
-    ((i++))
-    ios_api_replace_string=${!i}
-  fi
-  if [ "${!i}" = "-iOSArchivePath" ] ; then
-    ((i++))
-    ios_archive_path=${!i}
-  fi
-  if [ "${!i}" = "-iOSipaExportPath" ] ; then
-    ((i++))
-    ios_ipa_export_path=${!i}
-  fi
-  if [ "${!i}" = "-iOSipaName" ] ; then
-    ((i++))
-    ios_ipa_name=${!i}
-  fi
-  if [ "${!i}" = "-iOSAdhocExportOptionsPlist" ] ; then
-    ((i++))
-    ios_adhoc_export_options_plist=${!i}
-  fi
-  if [ "${!i}" = "-iOSStoreExportOptionsPlist" ] ; then
-    ((i++))
-    ios_app_store_export_options_plist=${!i}
-  fi
-  if [ "${!i}" = "-tips" ] ; then
-    ((i++))
-    tips=${!i}
+    options_plist=${!i}
   fi
   if [ "${!i}" = "-help" ] ; then
     printHelp
   fi
 done
 
-# 蒲公英所需更新指定的渠道短链接（到对应应用的渠道下面查看）
-pgyer_build_channel_shortcut=""
-# 自定义版本更新描述
-environment_description=""
+
 #git log
 flutter_git_logs=""
 ios_git_logs=""
@@ -200,47 +140,55 @@ update_description=""
 # 当前脚本所在的文件路径
 currentPath=$(cd `dirname "$0"` && pwd)
 iOSArchive="$ios_archive_path/$ios_target.xcarchive"
-# 根据环境更新相关的信息
-function updateEnvironmentInfo()
+# 读取options_plist文件的参数
+function readeOptionsPlist()
 {
-  if [[ -z "$pgyer_build_channel_shortcut" || -z "$environment_description" || -z "$ios_api_replace_string" ]];
-    then
-      case $environment in
-          1) 
-          pgyer_build_channel_shortcut="iOSDev"
-          environment_description="开发环境"
-          ios_api_replace_string="let apiEnvironment = ApiEnvironment.dev"
-          ;;
-          2) 
-          pgyer_build_channel_shortcut="iOSTest_gree"
-          environment_description="测试环境"
-          ios_api_replace_string="let apiEnvironment = ApiEnvironment.test"
-          ;;
-          3) 
-          pgyer_build_channel_shortcut="iOSCanary"
-          environment_description="灰度环境"
-          ios_api_replace_string="let apiEnvironment = ApiEnvironment.canary"
-          ;;
-          4)
-          pgyer_build_channel_shortcut="iOSProduct"
-          environment_description="生产环境"
-          ios_api_replace_string="let apiEnvironment = ApiEnvironment.product"
-          ;;
-          5)
-          pgyer_build_channel_shortcut="iOSPreproduct"
-          environment_description="预生产环境"
-          ios_api_replace_string="let apiEnvironment = ApiEnvironment.preproduct"
-          ;;
-          *)
-          pgyer_build_channel_shortcut="AutomaticWorkflow"
-          environment_description="自动化测试"
-          ios_api_replace_string="let apiEnvironment = ApiEnvironment.test"
-          ;;
-      esac
-  fi
-  echo $pgyer_build_channel_shortcut
-  echo $environment_description
-  echo $ios_api_replace_string
+      echo "options_plist文件绝对路径： $options_plist"
+      checkFileExists $options_plist "options_plist文件绝对路径不存在"
+      verifyExecutionResults $?
+      echo "====== 开始读取options_plist文件的参数 ======"
+      echo "$options_plist 存在"
+      pgyer_api_key=$(/usr/libexec/PlistBuddy -c "Print ::pgyerApiKey" $options_plist)
+      ios_api_file_path=$(/usr/libexec/PlistBuddy -c "Print ::iOSApiFilePath" $options_plist)
+      ios_api_string=$(/usr/libexec/PlistBuddy -c "Print ::iOSApiString" $options_plist)
+      ios_method=$(/usr/libexec/PlistBuddy -c "Print ::iOSMethod" $options_plist)
+      flutter_path=$(/usr/libexec/PlistBuddy -c "Print ::flutterPath" $options_plist)
+      ios_path=$(/usr/libexec/PlistBuddy -c "Print ::iOSPath" $options_plist)
+      ios_workspace=$(/usr/libexec/PlistBuddy -c "Print ::iOSWorkspace" $options_plist)
+      ios_target=$(/usr/libexec/PlistBuddy -c "Print ::iOSTarget" $options_plist)
+      ios_builld_configurations=$(/usr/libexec/PlistBuddy -c "Print ::iOSBuilldConfigurations" $options_plist)
+      ios_scheme=$(/usr/libexec/PlistBuddy -c "Print ::iOSScheme" $options_plist)
+      ios_archive_path=$(/usr/libexec/PlistBuddy -c "Print ::iOSArchivePath" $options_plist)
+      ios_ipa_export_path=$(/usr/libexec/PlistBuddy -c "Print ::iOSipaExportPath" $options_plist)
+      ios_ipa_name=$(/usr/libexec/PlistBuddy -c "Print ::iOSipaName" $options_plist)
+      ios_adhoc_export_options_plist=$(/usr/libexec/PlistBuddy -c "Print ::iOSAdhocExportOptionsPlist" $options_plist)
+      ios_app_store_export_options_plist=$(/usr/libexec/PlistBuddy -c "Print ::iOSStoreExportOptionsPlist" $options_plist)
+      pgyer_build_channel_shortcut=$(/usr/libexec/PlistBuddy -c "Print :pgyerBuildChannelShortcuts:$environment" $options_plist)
+      environment_description=$(/usr/libexec/PlistBuddy -c "Print :environmentDescriptions:$environment" $options_plist)
+      ios_api_replace_string=$(/usr/libexec/PlistBuddy -c "Print :iosApiReplaceStrings:$environment" $options_plist)
+      tips=$(/usr/libexec/PlistBuddy -c "Print ::tips" $options_plist)
+
+      echo "  ❗️❗️❗️❗️下面是打包参数文件（optionsPlist）读取到的参数❗️❗️❗️❗️"
+      echo "蒲公英API key:$pgyer_api_key"
+      echo "iOS项目设置api环境的文件绝对路径:$ios_api_file_path"
+      echo "iOS项目设置api环境的字符串:$ios_api_string"
+      echo "iOS 打包方式:$ios_method"
+      echo "flutter 项目绝对路径:$flutter_path"
+      echo "iOS 项目绝对路径:$ios_path"
+      echo "iOS workspace:$ios_workspace"
+      echo "iOS target:$ios_target"
+      echo "iOS builld configurations:$ios_builld_configurations"
+      echo "iOS scheme:$ios_scheme"
+      echo "归档输出路径(绝对路径)$ios_archive_path"
+      echo "ipa输出路径(绝对路径):$ios_ipa_export_path"
+      echo "ipa名称:$ios_ipa_name"
+      echo "手动打包输出的adhoc ExportOptions.plist的绝对路径:$ios_adhoc_export_options_plist"
+      echo "手动打包输出的app store ExportOptions.plist的绝对路径:$ios_app_store_export_options_plist"
+      echo "蒲公英渠道短字符串:$pgyer_build_channel_shortcut"
+      echo "环境描述:$environment_description"
+      echo "iOS项目设置api环境的替换字符串:$ios_api_replace_string"
+      echo "提示文案:$tips"
+      echo "====== 结束读取options_plist文件的参数 ======"
 }
 # 校验执行结果
 function verifyExecutionResults()
@@ -358,6 +306,8 @@ function verifyNecessaryParameters()
         verifyExecutionResults $?
         checkStringValid $apple_developer_password "apple developer密码不能为空"
         verifyExecutionResults $?
+        checkFileExists $ios_app_store_export_options_plist "app store ExportOptions.plist绝对路径不存在"
+        verifyExecutionResults $?
     fi
     checkStringValid $pgyer_api_key "蒲公英API key不能为空"
     verifyExecutionResults $?
@@ -393,14 +343,12 @@ function verifyNecessaryParameters()
     verifyExecutionResults $?
     checkFileExists $ios_adhoc_export_options_plist "adhoc ExportOptions.plist绝对路径不存在"
     verifyExecutionResults $?
-    checkFileExists $ios_app_store_export_options_plist "app store ExportOptions.plist绝对路径不存在"
-    verifyExecutionResults $?
 }
 # 准备工作
 function preparation()
 {
-    # 获取参数
-    # getParameters
+    # 读取参数
+    readeOptionsPlist
     # 校验必要参数
     verifyNecessaryParameters
 
@@ -408,9 +356,6 @@ function preparation()
     # find $ios_archive_path -type f -name "*.xcarchive" -delete
     # 清空ipa输出文件
     find $ios_ipa_export_path -type f -name "*.ipa" -delete
-    
-    # 更新环境相关的信息
-    updateEnvironmentInfo
 }
 function releaseFlutterProject() {
     echo "开始执行flutter项目任务"
