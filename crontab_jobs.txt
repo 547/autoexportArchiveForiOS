@@ -4,4 +4,7 @@ MAILTO="timer_sevenwang@163.com"
 9 8-21 * * * /bin/bash -c 'source /Users/momo/.zshrc; chmod +x /Users/momo/Documents/GitHub/autoexportArchiveForiOS/pull_git.sh; /Users/momo/Documents/GitHub/autoexportArchiveForiOS/pull_git.sh -filePath /Users/momo/Documents/GitHub/autoexportArchiveForiOS -branch main -httpsProxy http://127.0.0.1:7890 -httpProxy http://127.0.0.1:7890 -allProxy socks5://127.0.0.1:7890; crontab /Users/momo/Documents/GitHub/autoexportArchiveForiOS/crontab_jobs.txt'
 # 每天在指定时间点 自动打包iOS并上传到蒲公英
 # 11 8-21 * * * /bin/bash -c 'source /Users/momo/.zshrc; chmod +x /Users/momo/Documents/GitHub/autoexportArchiveForiOS/autoexport_archive.sh; /Users/momo/Documents/GitHub/autoexportArchiveForiOS/autoexport_archive.sh -environment product -flutterBranch release_24_04_26 -iOSBranch release_24_04_26 -optionsPlist /Users/momo/Documents/GitHub/autoexportArchiveForiOS/autoexportArchiveOptions.plist'
-
+# 每个工作日 17:00 - 21:00 每隔5分钟自动在后台运行微信( -g 让应用程序在后台运行, 保活)。
+*/5 17-21 * * 1-5 /bin/bash -c 'source /Users/momo/.zshrc; open -g /Applications/WeChat.app'
+# 每个周末 08:00 - 21:00 每隔5分钟自动在后台运行微信( -g 让应用程序在后台运行, 保活)。
+*/5 8-21 * * 0,6 /bin/bash -c 'source /Users/momo/.zshrc; open -g /Applications/WeChat.app'
