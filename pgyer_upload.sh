@@ -176,7 +176,7 @@ useOldApiUpload() {
     fi
 
     # 执行 curl 命令
-    result=$(execCommand "$curl_command")
+    execCommand "$curl_command"
 
     # 打印结果
     log "Upload response: $result"
