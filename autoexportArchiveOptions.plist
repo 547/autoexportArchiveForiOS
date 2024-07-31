@@ -66,7 +66,7 @@
 	<key>iOSipaExportPath</key>
 	<string>/Users/momo/Documents/AutomaticWorkflow/output/GreeSalesSystem</string>
 	<key>iOSipaName</key>
-	<string>格力动销</string>
+	<string>格力终端管理</string>
 	<key>iOSAdhocExportOptionsPlist</key>
 	<string>/Users/momo/Documents/AutomaticWorkflow/plists/GreeSalesSystem/AdhocExportOptions.plist</string>
 	<key>iOSStoreExportOptionsPlist</key>
