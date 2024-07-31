@@ -81,6 +81,8 @@ execCommand() {
     result=$(eval $@)
 }
 
+
+useNewApiUpload() {
 # ---------------------------------------------------------------
 # 获取上传凭证
 # ---------------------------------------------------------------
@@ -145,3 +147,39 @@ for i in {1..60}; do
         sleep 1
     fi
 done
+}
+# 使用旧接口上传
+useOldApiUpload() {
+
+    # ---------------------------------------------------------------
+    # 上传文件
+    # ---------------------------------------------------------------
+
+    logTitle "上传文件"
+
+    file_name=$(basename "${file}")
+
+    # 构建 curl 命令
+    local curl_command="curl -X POST \
+    --form-string '_api_key=${api_key}' \
+    -F 'file=@${file}' \
+    https://www.pgyer.com/apiv2/app/upload"
+
+    # 如果 buildUpdateDescription 有值，添加到命令中
+    if [ -n "${buildUpdateDescription}" ]; then
+        curl_command+=" --form-string 'buildUpdateDescription=${buildUpdateDescription}'"
+    fi
+
+    # 如果 buildChannelShortcut 有值，添加到命令中
+    if [ -n "${buildChannelShortcut}" ]; then
+        curl_command+=" --form-string 'buildChannelShortcut=${buildChannelShortcut}'"
+    fi
+
+    # 执行 curl 命令
+    result=$(execCommand "$curl_command")
+
+    # 打印结果
+    log "Upload response: $result"
+}
+
+useOldApiUpload
