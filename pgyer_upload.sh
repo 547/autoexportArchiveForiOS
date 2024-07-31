@@ -159,24 +159,18 @@ useOldApiUpload() {
 
     file_name=$(basename "${file}")
 
-    # 构建 curl 命令
-    local curl_command="curl -X POST \
-    --form-string '_api_key=${api_key}' \
-    -F 'file=@${file}' \
-    https://www.pgyer.com/apiv2/app/upload"
-
-    # 如果 buildUpdateDescription 有值，添加到命令中
-    if [ -n "${buildUpdateDescription}" ]; then
-        curl_command+=" --form-string 'buildUpdateDescription=${buildUpdateDescription}'"
-    fi
-
-    # 如果 buildChannelShortcut 有值，添加到命令中
-    if [ -n "${buildChannelShortcut}" ]; then
-        curl_command+=" --form-string 'buildChannelShortcut=${buildChannelShortcut}'"
-    fi
-
-    # 执行 curl 命令
-    execCommand "$curl_command"
+    command="curl -X POST"
+    [ -n "$api_key" ]                && command="${command} --form-string '_api_key=${api_key}'";
+    [ -n "$buildType" ]              && command="${command} --form-string 'buildType=${buildType}'";
+    [ -n "$buildInstallType" ]       && command="${command} --form-string 'buildInstallType=${buildInstallType}'";
+    [ -n "$buildPassword" ]          && command="${command} --form-string 'buildPassword=${buildPassword}'";
+    [ -n "$buildUpdateDescription" ] && command="${command} --form-string $'buildUpdateDescription=${buildUpdateDescription}'";
+    [ -n "$buildInstallDate" ]       && command="${command} --form-string 'buildInstallDate=${buildInstallDate}'";
+    [ -n "$buildInstallStartDate" ]  && command="${command} --form-string 'buildInstallStartDate=${buildInstallStartDate}'";
+    [ -n "$buildInstallEndDate" ]    && command="${command} --form-string 'buildInstallEndDate=${buildInstallEndDate}'";
+    [ -n "$buildChannelShortcut" ]   && command="${command} --form-string 'buildChannelShortcut=${buildChannelShortcut}'";
+    command="${command} -F 'file=@${file}' https://www.pgyer.com/apiv2/app/upload";
+    execCommand $command
 
     # 打印结果
     log "Upload response: $result"
