@@ -1,5 +1,5 @@
 MAILTO="timer_sevenwang@163.com"
-*/5 * * * * /bin/bash /Users/momo/Documents/GitHub/autoexportArchiveForiOS/crontest.sh
+# */5 * * * * /bin/bash /Users/momo/Documents/GitHub/autoexportArchiveForiOS/crontest.sh
 # 每天在指定时间点 自动拉取autoexportArchiveForiOS仓库，并更新crontab任务 （chmod +x 是给 pull_git.sh 这个脚本添加执行权限， 解决Permission denied的报错）
 9 8-21 * * * /bin/bash -c 'source /Users/momo/.zshrc; chmod +x /Users/momo/Documents/GitHub/autoexportArchiveForiOS/pull_git.sh; /Users/momo/Documents/GitHub/autoexportArchiveForiOS/pull_git.sh -filePath /Users/momo/Documents/GitHub/autoexportArchiveForiOS -branch main -httpsProxy http://127.0.0.1:7890 -httpProxy http://127.0.0.1:7890 -allProxy socks5://127.0.0.1:7890; crontab /Users/momo/Documents/GitHub/autoexportArchiveForiOS/crontab_jobs.txt'
 # 每天在指定时间点 自动打包iOS并上传到蒲公英
