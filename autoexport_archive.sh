@@ -366,7 +366,8 @@ function releaseFlutterProject() {
     getGitLogs "flutter"
     # flutter clean
     flutter pub get
-    flutter build ios --release --no-tree-shake-icons
+    # 运行 Flutter 构建，不进行代码签名，
+    flutter build ios --release --no-tree-shake-icons --no-codesign
     verifyExecutionResults $?
     echo "flutter项目任务执行结束"
 }
