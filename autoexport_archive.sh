@@ -383,7 +383,7 @@ function releaseiOSProject() {
     iOSArchive="$ios_archive_path/$ios_target.xcarchive"
     echo "iOS xcarchive绝对路径:$iOSArchive"
     echo "开始 archive"
-    xcodebuild archive -workspace $ios_workspace -scheme $ios_scheme -configuration $ios_builld_configurations -destination generic/platform=ios -archivePath $iOSArchive
+    xcodebuild archive -workspace $ios_workspace -scheme $ios_scheme -configuration $ios_builld_configurations -destination generic/platform=ios -archivePath $iOSArchive -parallelizeTargets
     verifyExecutionResults $?
     # .xcarchive是个文件夹不是文件
     checkPathExists $iOSArchive "archive 失败"
